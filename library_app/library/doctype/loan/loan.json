@@ -1,0 +1,91 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2025-07-13 15:07:02.145962",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "book",
+  "member",
+  "loan_date",
+  "return_date",
+  "returned",
+  "overdue"
+ ],
+ "fields": [
+  {
+   "description": "Links to the Book DocType (select \"Book\" from the dropdown under \"Options\" after choosing \"Link\" as type)",
+   "fieldname": "book",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Book",
+   "options": "Book",
+   "reqd": 1
+  },
+  {
+   "description": "Links to the Library Member DocType (select \"Library Member\" from the dropdown)",
+   "fieldname": "member",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Member",
+   "options": "Member",
+   "reqd": 1
+  },
+  {
+   "description": "Date the book was loaned",
+   "fieldname": "loan_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Loan Date",
+   "reqd": 1
+  },
+  {
+   "description": "Expected date the book should be returned",
+   "fieldname": "return_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Return Date",
+   "reqd": 1
+  },
+  {
+   "default": "0",
+   "description": "Checkbox: Is the book returned?",
+   "fieldname": "returned",
+   "fieldtype": "Check",
+   "label": "Returned"
+  },
+  {
+   "default": "0",
+   "description": "Checkbox: Is the loan overdue ?",
+   "fieldname": "overdue",
+   "fieldtype": "Check",
+   "label": "Overdue"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2025-07-13 15:39:15.861505",
+ "modified_by": "Administrator",
+ "module": "Library",
+ "name": "Loan",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": []
+}

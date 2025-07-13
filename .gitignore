@@ -53,3 +53,17 @@ jspm_packages/
 
 # Aider AI Chat
 .aider*
+
+library_app/public/library
+library_app/public/node_modules
+library_app/www/library.html
+
+# Node.js and frontend ignores (for React app inside library/ folder)
+/library/node_modules/
+/library/dist/
+/library/.env*
+/library/npm-debug.log*
+/library/yarn-debug.log*
+/library/yarn-error.log*
+/library/.parcel-cache/
+/library/.vite/ 

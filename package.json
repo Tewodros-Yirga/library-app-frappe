@@ -1,0 +1,15 @@
+{
+  "name": "library_app",
+  "version": "1.0.0",
+  "description": "Library management made easy",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "postinstall": "cd library && yarn install",
+    "dev": "cd library && yarn dev",
+    "build": "cd library && yarn build"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

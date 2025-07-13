@@ -237,3 +237,266 @@ app_license = "mit"
 # 	"Logging DocType Name": 30  # days to retain logs
 # }
 
+
+
+import frappe
+
+
+# --- Library Management System Roles and Permissions ---
+
+def create_library_roles():
+    """Creates the necessary roles for the library management system."""
+    roles = [
+        {
+            "role_name": "Librarian",
+            "desk_access": 1,
+            "restrict_to_domain": None,
+            "disabled": 0
+        },
+        {
+            "role_name": "Library Member",
+            "desk_access": 0,  # Members don't need desk access
+            "restrict_to_domain": None,
+            "disabled": 0
+        },
+        {
+            "role_name": "Library Manager",
+            "desk_access": 1,
+            "restrict_to_domain": None,
+            "disabled": 0
+        }
+    ]
+    
+    for role_data in roles:
+        if not frappe.db.exists("Role", role_data["role_name"]):
+            role = frappe.get_doc({
+                "doctype": "Role",
+                **role_data
+            })
+            role.insert(ignore_permissions=True)
+
+def setup_library_permissions():
+    """Sets up permissions for library DocTypes."""
+    # Permissions for Librarian role
+    librarian_permissions = [
+        {
+            "doctype": "Book",
+            "role": "Librarian",
+            "create": 1,
+            "read": 1,
+            "write": 1,
+            "delete": 1,
+            "submit": 0,
+            "cancel": 0,
+            "amend": 0,
+            "report": 1,
+            "export": 1,
+            "share": 1,
+            "print": 1,
+            "email": 1
+        },
+        {
+            "doctype": "Member",
+            "role": "Librarian",
+            "create": 1,
+            "read": 1,
+            "write": 1,
+            "delete": 1,
+            "submit": 0,
+            "cancel": 0,
+            "amend": 0,
+            "report": 1,
+            "export": 1,
+            "share": 1,
+            "print": 1,
+            "email": 1
+        },
+        {
+            "doctype": "Loan",
+            "role": "Librarian",
+            "create": 1,
+            "read": 1,
+            "write": 1,
+            "delete": 1,
+            "submit": 0,
+            "cancel": 0,
+            "amend": 0,
+            "report": 1,
+            "export": 1,
+            "share": 1,
+            "print": 1,
+            "email": 1
+        },
+        {
+            "doctype": "Reservation",
+            "role": "Librarian",
+            "create": 1,
+            "read": 1,
+            "write": 1,
+            "delete": 1,
+            "submit": 0,
+            "cancel": 0,
+            "amend": 0,
+            "report": 1,
+            "export": 1,
+            "share": 1,
+            "print": 1,
+            "email": 1
+        }
+    ]
+    
+    # Permissions for Library Member role
+    member_permissions = [
+        {
+            "doctype": "Book",
+            "role": "Library Member",
+            "create": 0,
+            "read": 1,
+            "write": 0,
+            "delete": 0,
+            "submit": 0,
+            "cancel": 0,
+            "amend": 0,
+            "report": 0,
+            "export": 0,
+            "share": 0,
+            "print": 0,
+            "email": 0
+        },
+        {
+            "doctype": "Member",
+            "role": "Library Member",
+            "create": 0,
+            "read": 1,
+            "write": 1,  # Can update their own member record
+            "delete": 0,
+            "submit": 0,
+            "cancel": 0,
+            "amend": 0,
+            "report": 0,
+            "export": 0,
+            "share": 0,
+            "print": 0,
+            "email": 0
+        },
+        {
+            "doctype": "Loan",
+            "role": "Library Member",
+            "create": 0,
+            "read": 1,
+            "write": 0,
+            "delete": 0,
+            "submit": 0,
+            "cancel": 0,
+            "amend": 0,
+            "report": 0,
+            "export": 0,
+            "share": 0,
+            "print": 0,
+            "email": 0
+        },
+        {
+            "doctype": "Reservation",
+            "role": "Library Member",
+            "create": 1,
+            "read": 1,
+            "write": 1,  # Can create and cancel their own reservations
+            "delete": 0,
+            "submit": 0,
+            "cancel": 0,
+            "amend": 0,
+            "report": 0,
+            "export": 0,
+            "share": 0,
+            "print": 0,
+            "email": 0
+        }
+    ]
+    
+    all_permissions = librarian_permissions + member_permissions
+    
+    for perm_data in all_permissions:
+        # Check if permission already exists
+        existing_perm = frappe.db.exists(
+            "Custom DocPerm",
+            {
+                "parent": perm_data["doctype"],
+                "role": perm_data["role"]
+            }
+        )
+        
+        if not existing_perm:
+            perm = frappe.get_doc({
+                "doctype": "Custom DocPerm",
+                "parent": perm_data["doctype"],
+                **perm_data
+            })
+            perm.insert(ignore_permissions=True)
+
+# --- Scheduled Tasks for Library Management ---
+
+def setup_library_scheduled_tasks():
+    """Sets up scheduled tasks for the library management system."""
+    # Task to check for overdue books and send notifications
+    if not frappe.db.exists("Scheduled Job Type", "library.check_and_notify_overdue_books"):
+        frappe.get_doc({
+            "doctype": "Scheduled Job Type",
+            "method": "library_management_system.api.check_and_notify_overdue_books",
+            "frequency": "Daily",
+            "cron_format": "0 9 * * *",  # Run at 9 AM daily
+            "create_log": 1,
+            "last_execution": None,
+            "stopped": 0
+        }).insert(ignore_permissions=True)
+
+# --- App Installation Hook ---
+
+def after_install():
+    """Runs after the app is installed."""
+    create_library_roles()
+    setup_library_permissions()
+    setup_library_scheduled_tasks()
+
+# --- App Migration Hook ---
+
+def after_migrate():
+    """Runs after the app is migrated."""
+    create_library_roles()
+    setup_library_permissions()
+    setup_library_scheduled_tasks()
+
+# API Methods
+# -----------
+api_methods = {
+    # Book Management
+    "library_app.api.get_books": "GET",
+    "library_app.api.create_book": "POST",
+    "library_app.api.get_book": "GET",
+    "library_app.api.update_book": "PUT", # Or use POST if you prefer simpler client-side calls
+    "library_app.api.delete_book": "DELETE", # Or use POST
+
+    # Member Management
+    "library_app.api.get_members": "GET",
+    "library_app.api.create_member": "POST",
+    "library_app.api.get_member": "GET",
+    "library_app.api.update_member": "PUT",
+    "library_app.api.delete_member": "DELETE",
+
+    # Loan Management
+    "library_app.api.create_loan": "POST",
+    "library_app.api.return_book": "POST", # A custom action, so POST is appropriate
+    "library_app.api.get_loans": "GET",
+    "library_app.api.get_loan": "GET",
+
+    # Reports
+    "library_app.api.get_books_on_loan_report": "GET",
+    "library_app.api.get_overdue_books_report": "GET",
+    
+    "library_app.api.register_user": "POST",
+
+}
+
+
+
+
+website_route_rules = [{'from_route': '/library/<path:app_path>', 'to_route': 'library'},]

@@ -1,4 +1,4 @@
-### Library
+### Library Management System
 
 Library management made easy
 

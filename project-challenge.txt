@@ -1,0 +1,81 @@
+Project Goal: Build a web application for authenticated users to manage books, members, and loans in a library, exposing a secure REST API and a custom frontend (not Frappe Desk).
+
+Key Technologies:
+
+Backend: Frappe Framework 15
+
+Frontend: React 18+ TypeScript (or Vue, Svelte, Frappe Web templates – but React is chosen here)
+
+Submission Deadline: July 15, 2025
+
+Core Features (MUST complete):
+
+Book Management (CRUD): Librarians need to create, view, edit, and delete books (Title, Author, Publish Date, ISBN) through the custom frontend to keep the catalog accurate.
+
+Member Management (CRUD): Librarians need to create, view, edit, and delete members (Name, Membership ID, Email, Phone) through the custom frontend to keep records up-to-date.
+
+Loan Creation: Librarians must be able to loan a book to a member, capturing the Loan Date and Return Date for tracking.
+
+Availability Check: The system must prevent loaning a book that is already on loan to avoid duplicate loans.
+
+Reservation Queue: Members should be able to reserve unavailable books to borrow them when returned.
+
+Overdue Notifications: The system should email members when loans become overdue.
+
+Reports: Librarians need reports of books currently on loan and overdue books for inventory management.
+
+REST API: Secure endpoints for adding, retrieving, updating, and deleting books, members, and loans for external system integration.
+
+Authentication & Roles: Users need to register, log in, and log out with role-based permissions (admin, librarian, member) for access control.
+
+Custom Front-End UI: A standalone web interface (not Frappe Desk) where authenticated users can browse available books, view details, and initiate loans or reservations, with clear validation errors.
+
+Stretch Goals (Optional but nice to attempt):
+
+Auto-Deployment: Project auto-deploys to a preview environment after each push.
+
+Automated Test Coverage: ≥80% automated test coverage.
+
+Export Loan History: Power users can export a member's loan history as CSV.
+
+Evaluation Criteria:
+
+Correctness: All "MUST-have" stories satisfied, availability checks and notifications work, all CRUD flows through the custom UI.
+
+Code Quality: Clean DocType models, typing, docstrings, meaningful commit history.
+
+Architecture & Reasoning: Clear folder layout, sensible library choices, trade-off notes in README.
+
+UX / DX Polish: Intuitive custom UI, helpful validation, descriptive API errors, painless setup.
+
+Stretch / Creativity: Early submission bonus, well-delivered stretch stories.
+
+Submission Checklist:
+
+Repo pushed to GitHub/GitLab, public, and an email sent to
+
+admin@360ground.com on completion.
+
+README.md covering setup, run, test, architectural decisions, and any shortcuts/trade-offs.
+
+Final commit tagged
+
+submission.
+
+Reply to the original email thread with a short cover note, repo link, and a screen-recording demo.
+
+Discussion Points for Demonstration:
+
+You should be prepared to discuss:
+
+How you ensured a book can't be loaned twice simultaneously.
+
+How you implemented email reminders for overdue books.
+
+How you wired the custom front-end to the REST API and avoided using Frappe Desk.
+
+Any trade-offs or assumptions made due to time constraints.
+
+What you would change or add if this were a production project.
+
+How you validated the solution and knew it was "correct enough" to move on.
