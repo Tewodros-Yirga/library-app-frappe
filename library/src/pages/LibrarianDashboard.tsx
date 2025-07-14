@@ -29,6 +29,7 @@ interface DashboardStats {
   totalLoans: number;
   overdueBooks: number;
   reservations: number;
+  users: number;
 }
 
 export default function LibrarianDashboard() {
@@ -80,6 +81,7 @@ export default function LibrarianDashboard() {
         const totalLoans = loans.length;
         const overdueCount = overdueBooks.length;
         const reservationsCount = reservations.length;
+        const usersCount = members.length;
 
         setStats({
           totalBooks,
@@ -89,7 +91,8 @@ export default function LibrarianDashboard() {
           totalMembers,
           totalLoans,
           overdueBooks: overdueCount,
-          reservations: reservationsCount
+          reservations: reservationsCount,
+          users: usersCount
         });
       } catch (err: any) {
         console.error("Error fetching dashboard data:", err);
@@ -149,6 +152,11 @@ export default function LibrarianDashboard() {
                 <BookmarkIcon width={32} height={32} className="text-yellow-600 mb-2" />
                 <Heading size="6">{stats?.reservations}</Heading>
                 <Text>Reservations</Text>
+              </Card>
+              <Card className="flex flex-col items-center p-4 bg-gray-50 dark:bg-gray-900">
+                <AvatarIcon width={32} height={32} className="text-gray-600 mb-2" />
+                <Heading size="6">{stats?.users}</Heading>
+                <Text>Users</Text>
               </Card>
             </Grid>
           )}

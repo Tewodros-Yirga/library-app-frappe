@@ -293,16 +293,24 @@ def return_book(loan_name):
 
 @frappe.whitelist()
 def get_loans():
-    """Fetches all library loans."""
+    """Fetches all library loans with book title and member name."""
     try:
         loans = frappe.get_list(
             "Loan",
             fields=["name", "book", "member", "loan_date", "return_date", "returned", "overdue"]
         )
-        return loans or []  # Return empty array if no loans
+        # Add book_title and member_name for display
+        for loan in loans:
+            # Get book title
+            book_doc = frappe.get_doc("Book", loan.book)
+            loan["book_title"] = book_doc.title
+            # Get member name
+            member_doc = frappe.get_doc("Member", loan.member)
+            loan["member_name"] = member_doc.member_name
+        return loans or []  # Return as dict for consistency
     except Exception as e:
         frappe.log_error(frappe.get_traceback(), "API Error: get_loans")
-        return []  # Return empty array on error
+        return []
 
 @frappe.whitelist()
 def get_loan(name):

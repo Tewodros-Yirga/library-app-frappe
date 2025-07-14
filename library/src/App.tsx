@@ -19,6 +19,7 @@ import Members from "./pages/Members/Members"; // For listing/viewing members
 import Loans from "./pages/Loans/Loans"; // For listing/viewing loans
 import BookForm from "./pages/Books/BookForm"; // For creating/editing books
 import BookDetail from './pages/Books/BookDetail';
+import LoanReturn from "./pages/Loans/LoanReturn";
 import MemberForm from "./pages/Members/MemberForm"; // For creating/editing members
 import LoanForm from "./pages/Loans/LoanForm"; // For creating loans
 import Reservations from "./pages/Reservations/Reservations"; // For managing reservations
@@ -195,6 +196,15 @@ function ThemeConsumerApp({ getSiteName }: { getSiteName: () => string }) {
                 </PrivateRoute>
               }
             />
+            <Route 
+            path="/loans/return/:name" 
+            element={
+              <PrivateRoute>
+                <RoleBasedRoute>
+                  <LoanReturn />
+                </RoleBasedRoute>
+              </PrivateRoute>
+            } />
             <Route
               path="/loans/new"
               element={
