@@ -38,18 +38,22 @@ const MainLayout = ({ children }: MainLayoutProps) => {
 
   return (
     <Flex direction="column" className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      {/* Header/Navbar */}
-      <Box className="bg-white dark:bg-gray-950 border-b border-gray-200 dark:border-gray-800 shadow-sm">
-        <Flex justify="between" align="center" className="px-6 py-4">
+      {/* Header/Navbar - sticky on mobile */}
+      <Box className="bg-white dark:bg-gray-950 border-b border-gray-200 dark:border-gray-800 shadow-sm fixed top-0 left-0 w-full z-50 px-2 md:px-6 py-2 md:py-4">
+        <Flex justify="between" align="center" className="max-w-7xl mx-auto">
           <Flex align="center" gap="4">
+            {/* Hamburger menu for mobile */}
+            <div className="md:hidden mr-2">
+              {/* The RoleBasedNavigation already handles mobile menu, so just render it here */}
+              <RoleBasedNavigation />
+            </div>
             <div className="flex items-center gap-3">
               <div className="w-8 h-8 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
                 <span className="text-white font-bold text-sm">L</span>
               </div>
-              <Heading size="5" className="text-gray-900 dark:text-gray-100">Library Management</Heading>
+              <Heading size="5" className="text-gray-900 dark:text-gray-100 text-base md:text-lg">Library Management System</Heading>
             </div>
           </Flex>
-          
           <Flex gap="4" align="center">
             {/* Theme Switcher */}
             <Button
@@ -60,18 +64,22 @@ const MainLayout = ({ children }: MainLayoutProps) => {
             >
               {theme === "dark" ? <SunIcon width={20} height={20} /> : <MoonIcon width={20} height={20} />}
             </Button>
-            <RoleBasedNavigation />
-            {/* User Profile Section */}
+            {/* Desktop navigation */}
+            <div className="hidden md:block">
+              <RoleBasedNavigation />
+            </div>
+            {/* User Profile Section - avatar only on mobile */}
             {currentUser && (
               <Flex align="center" gap="3">
                 <DropdownMenu.Root>
                   <DropdownMenu.Trigger>
-                    <Button variant="ghost" className="flex items-center gap-2 hover:bg-gray-100 dark:hover:bg-gray-800">
+                    <Button variant="ghost" className="flex items-center gap-2 hover:bg-gray-100 dark:hover:bg-gray-800 p-1 md:p-2">
                       <Avatar 
                         size="2" 
                         fallback={currentUser.charAt(0).toUpperCase()}
                         className="bg-gradient-to-r from-blue-500 to-purple-500"
                       />
+                      {/* Show name and role only on desktop */}
                       <Flex direction="column" align="start" className="hidden md:flex">
                         <Text size="2" className="font-medium text-gray-900 dark:text-gray-100">{currentUser}</Text>
                         <Text size="1" className={`text-${getRoleColor()}-600 font-medium`}>
@@ -92,12 +100,14 @@ const MainLayout = ({ children }: MainLayoutProps) => {
         </Flex>
       </Box>
 
-      {/* Main Content Area */}
-      <Box className="flex-1 p-6">{children}</Box>
+      {/* Main Content Area - add top and bottom padding to avoid overlap with sticky header/footer */}
+      <Box className="flex-1 pt-20 md:pt-0 pb-16 md:pb-0 px-2 md:px-6">
+        {children}
+      </Box>
 
-      {/* Footer */}
-      <Box className="bg-white dark:bg-gray-950 border-t border-gray-200 dark:border-gray-800 py-4 text-center">
-        <Text size="2" className="text-gray-500 dark:text-gray-400">
+      {/* Footer - sticky on mobile if content does not overflow */}
+      <Box className="bg-white dark:bg-gray-950 border-t border-gray-200 dark:border-gray-800 py-3 md:py-4 text-center fixed bottom-0 left-0 w-full z-40 md:static md:w-auto md:z-auto shadow md:shadow-none">
+        <Text size="2" className="text-gray-500 dark:text-gray-400 text-sm md:text-base">
           &copy; 2025 Library Management System. Built with ❤️ for better book management.
         </Text>
       </Box>
