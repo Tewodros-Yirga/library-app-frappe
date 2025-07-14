@@ -18,6 +18,7 @@ import Books from "./pages/Books/Books"; // For listing/viewing books
 import Members from "./pages/Members/Members"; // For listing/viewing members
 import Loans from "./pages/Loans/Loans"; // For listing/viewing loans
 import BookForm from "./pages/Books/BookForm"; // For creating/editing books
+import BookDetail from './pages/Books/BookDetail';
 import MemberForm from "./pages/Members/MemberForm"; // For creating/editing members
 import LoanForm from "./pages/Loans/LoanForm"; // For creating loans
 import Reservations from "./pages/Reservations/Reservations"; // For managing reservations
@@ -131,19 +132,26 @@ function ThemeConsumerApp({ getSiteName }: { getSiteName: () => string }) {
               path="/books/new"
               element={
                 <PrivateRoute>
-                  <LibrarianOnly>
+                  <RoleBasedRoute>
                     <BookForm />
-                  </LibrarianOnly>
+                  </RoleBasedRoute>
                 </PrivateRoute>
               }
             />
+            <Route path="/books/:name" element={
+              <PrivateRoute>
+                  <RoleBasedRoute >
+                  <BookDetail />
+                </RoleBasedRoute>
+              </PrivateRoute>
+            } />
             <Route
-              path="/books/edit/:name"
+              path="/books/:name/edit"
               element={
                 <PrivateRoute>
-                  <LibrarianOnly>
+                  <RoleBasedRoute>
                     <BookForm />
-                  </LibrarianOnly>
+                  </RoleBasedRoute>
                 </PrivateRoute>
               }
             />
@@ -151,9 +159,9 @@ function ThemeConsumerApp({ getSiteName }: { getSiteName: () => string }) {
               path="/members"
               element={
                 <PrivateRoute>
-                  <LibrarianOnly>
+                  <RoleBasedRoute>
                     <Members />
-                  </LibrarianOnly>
+                  </RoleBasedRoute>
                 </PrivateRoute>
               }
             />
@@ -161,9 +169,9 @@ function ThemeConsumerApp({ getSiteName }: { getSiteName: () => string }) {
               path="/members/new"
               element={
                 <PrivateRoute>
-                  <LibrarianOnly>
+                  <RoleBasedRoute>
                     <MemberForm />
-                  </LibrarianOnly>
+                  </RoleBasedRoute>
                 </PrivateRoute>
               }
             />
@@ -171,9 +179,9 @@ function ThemeConsumerApp({ getSiteName }: { getSiteName: () => string }) {
               path="/members/edit/:name"
               element={
                 <PrivateRoute>
-                  <LibrarianOnly>
+                  <RoleBasedRoute>
                     <MemberForm />
-                  </LibrarianOnly>
+                  </RoleBasedRoute>
                 </PrivateRoute>
               }
             />
@@ -181,9 +189,9 @@ function ThemeConsumerApp({ getSiteName }: { getSiteName: () => string }) {
               path="/loans"
               element={
                 <PrivateRoute>
-                  <LibrarianOnly>
+                  <RoleBasedRoute>
                     <Loans />
-                  </LibrarianOnly>
+                  </RoleBasedRoute>
                 </PrivateRoute>
               }
             />
@@ -191,9 +199,9 @@ function ThemeConsumerApp({ getSiteName }: { getSiteName: () => string }) {
               path="/loans/new"
               element={
                 <PrivateRoute>
-                  <LibrarianOnly>
+                  <RoleBasedRoute>
                     <LoanForm />
-                  </LibrarianOnly>
+                  </RoleBasedRoute>
                 </PrivateRoute>
               }
             />
@@ -209,9 +217,9 @@ function ThemeConsumerApp({ getSiteName }: { getSiteName: () => string }) {
               path="/my-loans"
               element={
                 <PrivateRoute>
-                  <MemberOnly>
+                  <RoleBasedRoute>
                     <MyLoans />
-                  </MemberOnly>
+                  </RoleBasedRoute>
                 </PrivateRoute>
               }
             />
@@ -219,9 +227,9 @@ function ThemeConsumerApp({ getSiteName }: { getSiteName: () => string }) {
               path="/my-reservations"
               element={
                 <PrivateRoute>
-                  <MemberOnly>
+                  <RoleBasedRoute>
                     <MyReservations />
-                  </MemberOnly>
+                  </RoleBasedRoute>
                 </PrivateRoute>
               }
             />

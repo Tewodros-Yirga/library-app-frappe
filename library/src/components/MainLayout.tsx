@@ -106,7 +106,7 @@ const MainLayout = ({ children }: MainLayoutProps) => {
       </Box>
 
       {/* Footer - sticky on mobile if content does not overflow */}
-      <Box className="bg-white dark:bg-gray-950 border-t border-gray-200 dark:border-gray-800 py-3 md:py-4 text-center fixed bottom-0 left-0 w-full z-40 md:static md:w-auto md:z-auto shadow md:shadow-none">
+      <Box className="mt-10 bg-white dark:bg-gray-950 border-t border-gray-200 dark:border-gray-800 py-3 md:py-4 text-center fixed bottom-0 left-0 w-full z-40 md:static md:w-auto md:z-auto shadow md:shadow-none">
         <Text size="2" className="text-gray-500 dark:text-gray-400 text-sm md:text-base">
           &copy; 2025 Library Management System. Built with ❤️ for better book management.
         </Text>
