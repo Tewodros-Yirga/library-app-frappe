@@ -20,6 +20,12 @@ import BookForm from "./pages/Books/BookForm"; // For creating/editing books
 import MemberForm from "./pages/Members/MemberForm"; // For creating/editing members
 import LoanForm from "./pages/Loans/LoanForm"; // For creating loans
 import Reservations from "./pages/Reservations/Reservations"; // For managing reservations
+import MyLoans from "./pages/MyLoans"; // For members to view their loans
+import MyReservations from "./pages/MyReservations"; // For members to view their reservations
+import CreateTestUsers from "./pages/CreateTestUsers"; // For creating test users
+
+// Import role-based components
+import { RoleBasedRoute, LibrarianOnly, MemberOnly } from "./components/RoleBasedRoute";
 
 // A simple wrapper component to protect routes
 const PrivateRoute = ({ children }: { children: JSX.Element }) => {
@@ -86,7 +92,9 @@ function App() {
                 path="/books/new"
                 element={
                   <PrivateRoute>
-                    <BookForm />
+                    <LibrarianOnly>
+                      <BookForm />
+                    </LibrarianOnly>
                   </PrivateRoute>
                 }
               />
@@ -94,7 +102,9 @@ function App() {
                 path="/books/edit/:name"
                 element={
                   <PrivateRoute>
-                    <BookForm />
+                    <LibrarianOnly>
+                      <BookForm />
+                    </LibrarianOnly>
                   </PrivateRoute>
                 }
               />
@@ -102,7 +112,9 @@ function App() {
                 path="/members"
                 element={
                   <PrivateRoute>
-                    <Members />
+                    <LibrarianOnly>
+                      <Members />
+                    </LibrarianOnly>
                   </PrivateRoute>
                 }
               />
@@ -110,7 +122,9 @@ function App() {
                 path="/members/new"
                 element={
                   <PrivateRoute>
-                    <MemberForm />
+                    <LibrarianOnly>
+                      <MemberForm />
+                    </LibrarianOnly>
                   </PrivateRoute>
                 }
               />
@@ -118,7 +132,9 @@ function App() {
                 path="/members/edit/:name"
                 element={
                   <PrivateRoute>
-                    <MemberForm />
+                    <LibrarianOnly>
+                      <MemberForm />
+                    </LibrarianOnly>
                   </PrivateRoute>
                 }
               />
@@ -126,7 +142,9 @@ function App() {
                 path="/loans"
                 element={
                   <PrivateRoute>
-                    <Loans />
+                    <LibrarianOnly>
+                      <Loans />
+                    </LibrarianOnly>
                   </PrivateRoute>
                 }
               />
@@ -134,7 +152,9 @@ function App() {
                 path="/loans/new"
                 element={
                   <PrivateRoute>
-                    <LoanForm />
+                    <LibrarianOnly>
+                      <LoanForm />
+                    </LibrarianOnly>
                   </PrivateRoute>
                 }
               />
@@ -143,6 +163,34 @@ function App() {
                 element={
                   <PrivateRoute>
                     <Reservations />
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="/my-loans"
+                element={
+                  <PrivateRoute>
+                    <MemberOnly>
+                      <MyLoans />
+                    </MemberOnly>
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="/my-reservations"
+                element={
+                  <PrivateRoute>
+                    <MemberOnly>
+                      <MyReservations />
+                    </MemberOnly>
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="/create-test-users"
+                element={
+                  <PrivateRoute>
+                    <CreateTestUsers />
                   </PrivateRoute>
                 }
               />

@@ -1,7 +1,9 @@
 // library-bench/apps/library_app/library/src/components/MainLayout.tsx
-import { Box, Flex, Button, Heading } from "@radix-ui/themes";
+import { Box, Flex, Button, Heading, Text, Avatar, DropdownMenu } from "@radix-ui/themes";
 import { useFrappeAuth } from "frappe-react-sdk";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { RoleBasedNavigation } from "./RoleBasedNavigation";
+import { useUserRoles } from "../hooks/useUserRoles";
 
 interface MainLayoutProps {
   children: React.ReactNode;
@@ -9,52 +11,84 @@ interface MainLayoutProps {
 
 const MainLayout = ({ children }: MainLayoutProps) => {
   const { logout, currentUser } = useFrappeAuth();
+  const { isLibrarian, isMember, isAdmin } = useUserRoles();
   const navigate = useNavigate();
 
   const handleLogout = async () => {
     await logout();
-    navigate("/login"); // Redirect to login after logout
+    navigate("/login");
+  };
+
+  const getUserRoleDisplay = () => {
+    if (isAdmin) return "Admin";
+    if (isLibrarian) return "Librarian";
+    if (isMember) return "Member";
+    return "User";
+  };
+
+  const getRoleColor = () => {
+    if (isAdmin) return "red";
+    if (isLibrarian) return "blue";
+    if (isMember) return "green";
+    return "gray";
   };
 
   return (
-    <Flex direction="column" className="min-h-screen">
+    <Flex direction="column" className="min-h-screen bg-gray-50">
       {/* Header/Navbar */}
-      <Box className="bg-gray-800 text-white p-4">
-        <Flex justify="between" align="center">
-          <Heading size="6">Library Management</Heading>
+      <Box className="bg-white border-b border-gray-200 shadow-sm">
+        <Flex justify="between" align="center" className="px-6 py-4">
+          <Flex align="center" gap="4">
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
+                <span className="text-white font-bold text-sm">L</span>
+              </div>
+              <Heading size="5" className="text-gray-900">Library Management</Heading>
+            </div>
+          </Flex>
+          
           <Flex gap="4" align="center">
-            <Link to="/" className="text-white hover:text-gray-300">
-              Dashboard
-            </Link>
-            <Link to="/books" className="text-white hover:text-gray-300">
-              Books
-            </Link>
-            <Link to="/members" className="text-white hover:text-gray-300">
-              Members
-            </Link>
-            <Link to="/loans" className="text-white hover:text-gray-300">
-              Loans
-            </Link>
-            <Link to="/reservations" className="text-white hover:text-gray-300">
-              Reservations
-            </Link>
-            {/* Display current user if logged in */}
+            <RoleBasedNavigation />
+            
+            {/* User Profile Section */}
             {currentUser && (
-              <span className="text-sm">Logged in as: {currentUser}</span>
+              <Flex align="center" gap="3">
+                <DropdownMenu.Root>
+                  <DropdownMenu.Trigger>
+                    <Button variant="ghost" className="flex items-center gap-2 hover:bg-gray-100">
+                      <Avatar 
+                        size="2" 
+                        fallback={currentUser.charAt(0).toUpperCase()}
+                        className="bg-gradient-to-r from-blue-500 to-purple-500"
+                      />
+                      <Flex direction="column" align="start" className="hidden md:flex">
+                        <Text size="2" className="font-medium text-gray-900">{currentUser}</Text>
+                        <Text size="1" className={`text-${getRoleColor()}-600 font-medium`}>
+                          {getUserRoleDisplay()}
+                        </Text>
+                      </Flex>
+                    </Button>
+                  </DropdownMenu.Trigger>
+                  <DropdownMenu.Content>
+                    <DropdownMenu.Item onClick={handleLogout} className="text-red-600">
+                      Logout
+                    </DropdownMenu.Item>
+                  </DropdownMenu.Content>
+                </DropdownMenu.Root>
+              </Flex>
             )}
-            <Button onClick={handleLogout} variant="soft" color="red">
-              Logout
-            </Button>
           </Flex>
         </Flex>
       </Box>
 
       {/* Main Content Area */}
-      <Box className="flex-1 p-8">{children}</Box>
+      <Box className="flex-1 p-6">{children}</Box>
 
-      {/* Footer (Optional) */}
-      <Box className="bg-gray-800 text-white p-4 text-center text-sm">
-        &copy; 2025 Library Management System
+      {/* Footer */}
+      <Box className="bg-white border-t border-gray-200 py-4 text-center">
+        <Text size="2" className="text-gray-500">
+          &copy; 2025 Library Management System. Built with ❤️ for better book management.
+        </Text>
       </Box>
     </Flex>
   );

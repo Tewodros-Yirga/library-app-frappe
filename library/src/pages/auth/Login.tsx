@@ -8,35 +8,35 @@ import {
   Heading,
   Text,
   TextField,
+  Spinner,
 } from "@radix-ui/themes";
 import { useFrappeAuth } from "frappe-react-sdk";
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom"; // Import useNavigate
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
   const [username, setUserName] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [loginError, setLoginError] = useState<any>("");
 
-  const { currentUser, login, isLoading } = useFrappeAuth(); // Removed logout as it's not needed here
-  const navigate = useNavigate(); // Initialize navigate
+  const { currentUser, login, isLoading } = useFrappeAuth();
+  const navigate = useNavigate();
 
   // Effect to redirect if already logged in
   useEffect(() => {
     if (currentUser) {
-      navigate("/"); // Redirect to dashboard if currentUser exists
+      navigate("/");
     }
-  }, [currentUser, navigate]); // Depend on currentUser and navigate
+  }, [currentUser, navigate]);
 
   const onSubmit = () => {
-    setLoginError(""); // Clear previous errors
+    setLoginError("");
     login({
       username: username,
       password: password,
     })
       .then((res) => {
         console.log("Login successful:", res);
-        // Redirection is now handled by the useEffect hook
       })
       .catch((err) => {
         console.error("Login failed:", err);
@@ -44,56 +44,117 @@ const Login = () => {
       });
   };
 
-  // If user is already logged in or logging in, we don't need to show the form
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      onSubmit();
+    }
+  };
+
+  // If user is already logged in or logging in, show loading
   if (currentUser || isLoading) {
     return (
-      <Flex align="center" justify="center" className="w-screen h-screen">
-        <Card className="p-4">
-          <Text>
-            {isLoading ? "Logging in..." : "Already logged in. Redirecting..."}
-          </Text>
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 flex items-center justify-center">
+        <Card className="p-8 shadow-xl bg-white/80 backdrop-blur-sm">
+          <Flex direction="column" align="center" gap="4">
+            <Spinner size="3" />
+            <Text size="3" className="text-gray-600">
+              {isLoading ? "Logging in..." : "Already logged in. Redirecting..."}
+            </Text>
+          </Flex>
         </Card>
-      </Flex>
+      </div>
     );
   }
 
   return (
-    <Flex align="center" justify="center" className="w-screen h-screen">
-      <Card className="w-[40vw] min-h-80 p-2">
-        <Flex direction="column" gap="2">
-          <Heading>Login</Heading>
-          {loginError ? (
-            <Callout.Root color="red">
-              <Callout.Text>
-                {loginError.message || JSON.stringify(loginError)}
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 flex items-center justify-center p-4">
+      {/* Background decoration */}
+      <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-blue-400 to-purple-400 rounded-full opacity-10 blur-3xl"></div>
+        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-tr from-indigo-400 to-pink-400 rounded-full opacity-10 blur-3xl"></div>
+      </div>
+
+      <Card className="w-full max-w-md p-8 shadow-2xl bg-white/90 backdrop-blur-sm border-0">
+        <Flex direction="column" gap="6">
+          {/* Header */}
+          <Flex direction="column" align="center" gap="3">
+            <div className="w-16 h-16 bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg">
+              <span className="text-white font-bold text-2xl">L</span>
+            </div>
+            <Flex direction="column" align="center" gap="1">
+              <Heading size="6" className="text-gray-900">Welcome Back</Heading>
+              <Text size="3" className="text-gray-500 text-center">
+                Sign in to your library account
+              </Text>
+            </Flex>
+          </Flex>
+
+          {/* Error Display */}
+          {loginError && (
+            <Callout.Root color="red" className="border-red-200 bg-red-50">
+              <Callout.Text className="text-red-700">
+                {loginError.message || "Invalid username or password. Please try again."}
               </Callout.Text>
             </Callout.Root>
-          ) : null}
-          <Box>
-            <Text as="label">Username/Email</Text>
-            <TextField.Root
-              size="2"
-              placeholder="Username"
-              onChange={(e) => setUserName(e.target.value)}
-              value={username}
-            />
+          )}
+
+          {/* Login Form */}
+          <Flex direction="column" gap="4">
+            <Box>
+              <Text as="label" size="2" className="font-medium text-gray-700 mb-2 block">
+                Username or Email
+              </Text>
+              <TextField.Root
+                size="3"
+                placeholder="Enter your username or email"
+                onChange={(e) => setUserName(e.target.value)}
+                value={username}
+                onKeyPress={handleKeyPress}
+                className="w-full border-gray-300 focus:border-blue-500 focus:ring-blue-500"
+              />
+            </Box>
+
+            <Box>
+              <Text as="label" size="2" className="font-medium text-gray-700 mb-2 block">
+                Password
+              </Text>
+              <TextField.Root
+                type="password"
+                size="3"
+                placeholder="Enter your password"
+                onChange={(e) => setPassword(e.target.value)}
+                value={password}
+                onKeyPress={handleKeyPress}
+                className="w-full border-gray-300 focus:border-blue-500 focus:ring-blue-500"
+              />
+            </Box>
+
+            <Button 
+              onClick={onSubmit} 
+              disabled={isLoading || !username || !password}
+              size="3"
+              className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-medium py-3 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {isLoading ? (
+                <Flex align="center" gap="2">
+                  <Spinner size="2" />
+                  <Text>Signing in...</Text>
+                </Flex>
+              ) : (
+                "Sign In"
+              )}
+            </Button>
+          </Flex>
+
+          {/* Footer */}
+          <Box className="text-center">
+            <Text size="2" className="text-gray-500">
+              Need help? Contact your library administrator
+            </Text>
           </Box>
-          <Box>
-            <Text as="label">Password</Text>
-            <TextField.Root
-              type="password"
-              size="2"
-              placeholder="*******"
-              onChange={(e) => setPassword(e.target.value)}
-              value={password}
-            />
-          </Box>
-          <Button onClick={onSubmit} disabled={isLoading}>
-            Login
-          </Button>
         </Flex>
       </Card>
-    </Flex>
+    </div>
   );
 };
 

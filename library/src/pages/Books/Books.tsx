@@ -3,19 +3,23 @@ import {
   Heading,
   Button,
   Flex,
-  Table,
   Text,
   Box,
   Callout,
   Spinner,
   IconButton,
   AlertDialog,
+  TextField,
+  Badge,
+  Card,
+  Grid,
 } from "@radix-ui/themes";
 import MainLayout from "../../components/MainLayout";
 import { Link, useNavigate } from "react-router-dom";
 import { useFrappePostCall, useFrappeDeleteDoc } from "frappe-react-sdk";
-import { Pencil1Icon, TrashIcon, BookmarkIcon } from "@radix-ui/react-icons";
-import { useEffect } from "react";
+import { Pencil1Icon, TrashIcon, BookmarkIcon, MagnifyingGlassIcon } from "@radix-ui/react-icons";
+import { useEffect, useState } from "react";
+import { useUserRoles } from "../../hooks/useUserRoles";
 
 // Define the type for Book data
 interface BookData {
@@ -29,23 +33,26 @@ interface BookData {
 
 // Define the type for the API response
 interface GetBooksResponse {
-  message: BookData[]; // The actual list of books is inside 'message'
+  message: BookData[];
 }
 
 const Books = () => {
   const navigate = useNavigate();
+  const { isLibrarian } = useUserRoles();
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filterStatus, setFilterStatus] = useState<string>("all");
 
   // Hook to fetch all books using useFrappePostCall
   const {
     call: fetchBooksCall,
-    result: apiResponse, // Renamed 'books' to 'apiResponse' to clarify it's the full API object
+    result: apiResponse,
     loading: isLoading,
     error: fetchError,
     isCompleted: fetchCompleted,
-  } = useFrappePostCall<GetBooksResponse>("library_app.api.get_books"); // Use the new interface
+  } = useFrappePostCall<GetBooksResponse>("library_app.api.get_books");
 
   // Extract the actual array of books from the message property
-  const books: BookData[] = apiResponse?.message || []; // <--- CRITICAL CHANGE HERE
+  const books: BookData[] = apiResponse?.message || [];
 
   // Hook for deleting a book
   const {
@@ -66,12 +73,24 @@ const Books = () => {
     fetchBooksCall({});
   }, [fetchBooksCall]);
 
+  // Filter books based on search term and status
+  const filteredBooks = books.filter((book) => {
+    const matchesSearch = 
+      book.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      book.author.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      book.isbn.toLowerCase().includes(searchTerm.toLowerCase());
+    
+    const matchesStatus = filterStatus === "all" || book.status === filterStatus;
+    
+    return matchesSearch && matchesStatus;
+  });
+
   // Handle deletion of a book
   const handleDelete = async (name: string, title: string) => {
     try {
       await deleteDoc("Book", name);
       console.log(`Book "${title}" deleted successfully.`);
-      fetchBooksCall({}); // Re-fetch the list after successful deletion
+      fetchBooksCall({});
       resetDelete();
     } catch (err: any) {
       console.error("Failed to delete book:", err);
@@ -85,8 +104,6 @@ const Books = () => {
   // Handle reservation of a book
   const handleReserve = async (bookName: string, bookTitle: string) => {
     try {
-      // For now, we'll use a simple prompt to get member name
-      // In a real app, you'd get this from the current user's context
       const memberName = prompt("Enter member name for reservation:");
       if (!memberName) return;
 
@@ -95,7 +112,7 @@ const Books = () => {
         member_name: memberName
       });
       alert(`Reservation created successfully for "${bookTitle}"`);
-      fetchBooksCall({}); // Re-fetch to update status
+      fetchBooksCall({});
     } catch (err: any) {
       console.error("Failed to create reservation:", err);
       const errorMessage = err.messages
@@ -105,16 +122,36 @@ const Books = () => {
     }
   };
 
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case "Available": return "green";
+      case "On Loan": return "red";
+      case "Reserved": return "yellow";
+      default: return "gray";
+    }
+  };
+
+  const getStatusIcon = (status: string) => {
+    switch (status) {
+      case "Available": return "✅";
+      case "On Loan": return "📖";
+      case "Reserved": return "⏰";
+      default: return "❓";
+    }
+  };
+
   const combinedLoading = isLoading || isDeleting;
   const combinedError = fetchError || deleteError;
 
   if (combinedLoading && !apiResponse) {
-    // Check apiResponse for initial load state
     return (
       <MainLayout>
-        <Flex justify="center" align="center" className="h-full">
-          <Spinner size="3" /> <Text ml="2">Loading books...</Text>
-        </Flex>
+        <div className="flex justify-center items-center h-64">
+          <div className="text-center">
+            <Spinner size="3" />
+            <Text className="mt-4 text-gray-600">Loading books...</Text>
+          </div>
+        </div>
       </MainLayout>
     );
   }
@@ -122,10 +159,9 @@ const Books = () => {
   if (combinedError && !apiResponse) {
     return (
       <MainLayout>
-        <Callout.Root color="red">
-          <Callout.Text>
-            Error loading books:{" "}
-            {combinedError.message || JSON.stringify(combinedError)}
+        <Callout.Root color="red" className="border-red-200 bg-red-50">
+          <Callout.Text className="text-red-700">
+            Error loading books: {combinedError.message || JSON.stringify(combinedError)}
           </Callout.Text>
         </Callout.Root>
       </MainLayout>
@@ -134,140 +170,215 @@ const Books = () => {
 
   return (
     <MainLayout>
-      <Flex direction="column" gap="4">
-        <Flex justify="between" align="center">
-          <Heading>Book List</Heading>
-          <Button onClick={() => navigate("/books/new")}>New Book</Button>
-        </Flex>
+      <div className="space-y-6">
+        {/* Header */}
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div>
+            <Heading size="7" className="text-gray-900">Book Catalog</Heading>
+            <Text className="text-gray-600 mt-1">
+              Browse and manage your library's book collection
+            </Text>
+          </div>
+          {isLibrarian && (
+            <Button 
+              onClick={() => navigate("/books/new")}
+              className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-medium px-6 py-3 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl"
+            >
+              <span className="mr-2">📚</span>
+              Add New Book
+            </Button>
+          )}
+        </div>
 
+        {/* Search and Filter */}
+        <Card className="p-6 bg-white border-0 shadow-lg">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <Text className="text-sm font-medium text-gray-700 mb-2 block">Search Books</Text>
+              <TextField.Root
+                placeholder="Search by title, author, or ISBN..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full"
+              >
+                <TextField.Slot>
+                  <MagnifyingGlassIcon height="16" width="16" />
+                </TextField.Slot>
+              </TextField.Root>
+            </div>
+            <div>
+              <Text className="text-sm font-medium text-gray-700 mb-2 block">Filter by Status</Text>
+              <select
+                value={filterStatus}
+                onChange={(e) => setFilterStatus(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              >
+                <option value="all">All Status</option>
+                <option value="Available">Available</option>
+                <option value="On Loan">On Loan</option>
+                <option value="Reserved">Reserved</option>
+              </select>
+            </div>
+          </div>
+        </Card>
+
+        {/* Status Messages */}
         {isDeleting && (
-          <Callout.Root color="yellow">
-            <Callout.Text>
+          <Callout.Root color="yellow" className="border-yellow-200 bg-yellow-50">
+            <Callout.Text className="text-yellow-700">
               <Spinner size="1" /> Deleting book...
             </Callout.Text>
           </Callout.Root>
         )}
-        {combinedError && ( // Show error overlay regardless of initial data
-          <Callout.Root color="red" mt="2">
-            <Callout.Text>
+        
+        {combinedError && (
+          <Callout.Root color="red" className="border-red-200 bg-red-50">
+            <Callout.Text className="text-red-700">
               Error: {combinedError.message || JSON.stringify(combinedError)}
             </Callout.Text>
           </Callout.Root>
         )}
 
-        {/* Now 'books' is correctly the array */}
-        {books.length > 0 ? ( // Removed Array.isArray(books) as we're sure it's an array now
-          <Table.Root variant="surface">
-            <Table.Header>
-              <Table.Row>
-                <Table.ColumnHeaderCell>Title</Table.ColumnHeaderCell>
-                <Table.ColumnHeaderCell>Author</Table.ColumnHeaderCell>
-                <Table.ColumnHeaderCell>Publish Date</Table.ColumnHeaderCell>
-                <Table.ColumnHeaderCell>ISBN</Table.ColumnHeaderCell>
-                <Table.ColumnHeaderCell>Status</Table.ColumnHeaderCell>
-                <Table.ColumnHeaderCell>Actions</Table.ColumnHeaderCell>
-              </Table.Row>
-            </Table.Header>
+        {/* Results Summary */}
+        <div className="flex items-center justify-between">
+          <Text className="text-gray-600">
+            Showing {filteredBooks.length} of {books.length} books
+          </Text>
+          {searchTerm && (
+            <Text className="text-sm text-gray-500">
+              Search results for: "{searchTerm}"
+            </Text>
+          )}
+        </div>
 
-            <Table.Body>
-              {books.map((book: BookData) => (
-                <Table.Row key={book.name}>
-                  <Table.Cell>{book.title}</Table.Cell>
-                  <Table.Cell>{book.author}</Table.Cell>
-                  <Table.Cell>{book.publish_date}</Table.Cell>
-                  <Table.Cell>{book.isbn}</Table.Cell>
-                  <Table.Cell>
-                    <Text
-                      color={
-                        book.status === "Available"
-                          ? "green"
-                          : book.status === "On Loan"
-                          ? "red"
-                          : "yellow"
-                      }
+        {/* Books Grid */}
+        {filteredBooks.length > 0 ? (
+          <Grid columns={{ initial: "1", sm: "2", lg: "3" }} gap="4">
+            {filteredBooks.map((book: BookData) => (
+              <Card key={book.name} className="p-6 bg-white border-0 shadow-lg hover:shadow-xl transition-shadow">
+                <div className="space-y-4">
+                  {/* Book Header */}
+                  <div className="flex items-start justify-between">
+                    <div className="flex-1">
+                      <Heading size="4" className="text-gray-900 line-clamp-2">
+                        {book.title}
+                      </Heading>
+                      <Text className="text-gray-600 mt-1">by {book.author}</Text>
+                    </div>
+                    <Badge 
+                      variant="soft" 
+                      color={getStatusColor(book.status) as any}
+                      className="ml-2"
                     >
+                      <span className="mr-1">{getStatusIcon(book.status)}</span>
                       {book.status}
-                    </Text>
-                  </Table.Cell>
-                  <Table.Cell>
-                    <Flex gap="2">
-                      <IconButton
-                        variant="ghost"
-                        color="iris"
-                        onClick={() => navigate(`/books/edit/${book.name}`)}
-                        disabled={isDeleting}
-                      >
-                        <Pencil1Icon />
-                      </IconButton>
+                    </Badge>
+                  </div>
 
-                      {book.status !== "Available" && (
+                  {/* Book Details */}
+                  <div className="space-y-2">
+                    <div className="flex items-center text-sm text-gray-600">
+                      <span className="font-medium w-20">ISBN:</span>
+                      <span className="font-mono">{book.isbn}</span>
+                    </div>
+                    <div className="flex items-center text-sm text-gray-600">
+                      <span className="font-medium w-20">Published:</span>
+                      <span>{book.publish_date}</span>
+                    </div>
+                  </div>
+
+                  {/* Actions */}
+                  <div className="flex items-center gap-2 pt-2 border-t border-gray-100">
+                    {isLibrarian && (
+                      <>
                         <IconButton
-                          variant="ghost"
-                          color="yellow"
-                          onClick={() => handleReserve(book.name, book.title)}
-                          disabled={isDeleting}
-                          title="Reserve this book"
+                          variant="soft"
+                          color="blue"
+                          onClick={() => navigate(`/books/edit/${book.name}`)}
+                          className="flex-1"
                         >
-                          <BookmarkIcon />
+                          <Pencil1Icon />
+                          <span className="ml-1 text-xs">Edit</span>
                         </IconButton>
-                      )}
-
-                      <AlertDialog.Root>
-                        <AlertDialog.Trigger>
-                          <IconButton
-                            variant="ghost"
-                            color="red"
-                            disabled={isDeleting}
-                          >
-                            <TrashIcon />
-                          </IconButton>
-                        </AlertDialog.Trigger>
-                        <AlertDialog.Content>
-                          <AlertDialog.Title>
-                            Confirm Deletion
-                          </AlertDialog.Title>
-                          <AlertDialog.Description size="2">
-                            Are you sure you want to delete book "{book.title}"?
-                            This action cannot be undone.
-                          </AlertDialog.Description>
-
-                          <Flex gap="3" mt="4" justify="end">
-                            <AlertDialog.Cancel>
-                              <Button
-                                variant="soft"
-                                color="gray"
-                                disabled={isDeleting}
-                              >
-                                Cancel
-                              </Button>
-                            </AlertDialog.Cancel>
-                            <AlertDialog.Action>
-                              <Button
-                                variant="solid"
-                                color="red"
-                                onClick={() =>
-                                  handleDelete(book.name, book.title)
-                                }
-                                disabled={isDeleting}
-                              >
-                                {isDeleting ? "Deleting..." : "Delete"}
-                              </Button>
-                            </AlertDialog.Action>
-                          </Flex>
-                        </AlertDialog.Content>
-                      </AlertDialog.Root>
-                    </Flex>
-                  </Table.Cell>
-                </Table.Row>
-              ))}
-            </Table.Body>
-          </Table.Root>
+                        
+                        <AlertDialog.Root>
+                          <AlertDialog.Trigger>
+                            <IconButton
+                              variant="soft"
+                              color="red"
+                              className="flex-1"
+                            >
+                              <TrashIcon />
+                              <span className="ml-1 text-xs">Delete</span>
+                            </IconButton>
+                          </AlertDialog.Trigger>
+                          <AlertDialog.Content>
+                            <AlertDialog.Title>Delete Book</AlertDialog.Title>
+                            <AlertDialog.Description>
+                              Are you sure you want to delete "{book.title}"? This action cannot be undone.
+                            </AlertDialog.Description>
+                            <Flex gap="3" mt="4" justify="end">
+                              <AlertDialog.Cancel>
+                                <Button variant="soft" color="gray">
+                                  Cancel
+                                </Button>
+                              </AlertDialog.Cancel>
+                              <AlertDialog.Action>
+                                <Button 
+                                  variant="solid" 
+                                  color="red"
+                                  onClick={() => handleDelete(book.name, book.title)}
+                                >
+                                  Delete
+                                </Button>
+                              </AlertDialog.Action>
+                            </Flex>
+                          </AlertDialog.Content>
+                        </AlertDialog.Root>
+                      </>
+                    )}
+                    
+                    {book.status === "Available" && (
+                      <Button
+                        variant="soft"
+                        color="green"
+                        onClick={() => handleReserve(book.name, book.title)}
+                        className="flex-1"
+                      >
+                        <BookmarkIcon />
+                        <span className="ml-1 text-xs">Reserve</span>
+                      </Button>
+                    )}
+                  </div>
+                </div>
+              </Card>
+            ))}
+          </Grid>
         ) : (
-          <Box>
-            <Text>No books found. Click "New Book" to add one.</Text>
-          </Box>
+          <Card className="p-12 bg-white border-0 shadow-lg text-center">
+            <div className="space-y-4">
+              <div className="text-6xl">📚</div>
+              <Heading size="4" className="text-gray-900">
+                {searchTerm ? "No books found" : "No books available"}
+              </Heading>
+              <Text className="text-gray-600">
+                {searchTerm 
+                  ? `No books match your search for "${searchTerm}"`
+                  : "Get started by adding some books to your library"
+                }
+              </Text>
+              {isLibrarian && !searchTerm && (
+                <Button 
+                  onClick={() => navigate("/books/new")}
+                  className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-medium px-6 py-3 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl"
+                >
+                  Add Your First Book
+                </Button>
+              )}
+            </div>
+          </Card>
         )}
-      </Flex>
+      </div>
     </MainLayout>
   );
 };

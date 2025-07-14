@@ -416,6 +416,88 @@ def register_user(full_name, email, password, phone=None):
         frappe.log_error(frappe.get_traceback(), "User Registration Failed")
         frappe.throw(f"Registration failed: {e}")
 
+@frappe.whitelist(allow_guest=True)
+def create_librarian_user(full_name, email, password, phone=None):
+    """
+    Creates a new user with Librarian role.
+    This should only be used by administrators.
+    """
+    try:
+        # Check if user already exists
+        if frappe.db.exists("User", email):
+            frappe.throw("User already exists with this email.")
+
+        # Create Frappe User
+        user = frappe.get_doc({
+            "doctype": "User",
+            "email": email,
+            "first_name": full_name,
+            "send_welcome_email": 0,
+            "enabled": 1,
+            "new_password": password,
+            "roles": [{"role": "Librarian"}]
+        })
+        user.insert(ignore_permissions=True)
+
+        # Create Library Member record (librarians are also members)
+        library_member = frappe.get_doc({
+            "doctype": "Member",
+            "member_name": full_name,
+            "email": email,
+            "membership_id": f"LIB-{frappe.generate_hash(length=6)}",  # LIB prefix for librarians
+            "phone": phone or "",
+            "frappe_user": user.name
+        })
+        library_member.insert()
+
+        frappe.db.commit()
+        return {"message": "Librarian user created successfully. Please log in."}
+
+    except Exception as e:
+        frappe.log_error(frappe.get_traceback(), "Librarian User Creation Failed")
+        frappe.throw(f"Librarian creation failed: {e}")
+
+@frappe.whitelist(allow_guest=True)
+def create_manager_user(full_name, email, password, phone=None):
+    """
+    Creates a new user with Library Manager role.
+    This should only be used by administrators.
+    """
+    try:
+        # Check if user already exists
+        if frappe.db.exists("User", email):
+            frappe.throw("User already exists with this email.")
+
+        # Create Frappe User
+        user = frappe.get_doc({
+            "doctype": "User",
+            "email": email,
+            "first_name": full_name,
+            "send_welcome_email": 0,
+            "enabled": 1,
+            "new_password": password,
+            "roles": [{"role": "Library Manager"}]
+        })
+        user.insert(ignore_permissions=True)
+
+        # Create Library Member record (managers are also members)
+        library_member = frappe.get_doc({
+            "doctype": "Member",
+            "member_name": full_name,
+            "email": email,
+            "membership_id": f"MGR-{frappe.generate_hash(length=6)}",  # MGR prefix for managers
+            "phone": phone or "",
+            "frappe_user": user.name
+        })
+        library_member.insert()
+
+        frappe.db.commit()
+        return {"message": "Manager user created successfully. Please log in."}
+
+    except Exception as e:
+        frappe.log_error(frappe.get_traceback(), "Manager User Creation Failed")
+        frappe.throw(f"Manager creation failed: {e}")
+
 # --- Reservation Management API ---
 
 @frappe.whitelist()
@@ -765,3 +847,20 @@ def get_my_reservations():
         })
     
     return detailed_reservations
+
+@frappe.whitelist()
+def get_current_user_roles():
+    """Gets the roles of the currently logged-in user."""
+    try:
+        if not frappe.session.user or frappe.session.user == "Guest":
+            return {"roles": [], "user": None}
+        
+        user_roles = frappe.get_roles(frappe.session.user)
+        
+        return {
+            "roles": user_roles,
+            "user": frappe.session.user
+        }
+    except Exception as e:
+        frappe.log_error(frappe.get_traceback(), "Error getting user roles")
+        return {"roles": [], "user": None, "error": str(e)}
