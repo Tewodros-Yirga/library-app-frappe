@@ -6,7 +6,7 @@ export default function MemberDashboard() {
   const navigate = useNavigate();
 
   const handleExportLoanHistory = async () => {
-    // Call your backend API to get CSV, then trigger download
+    // Call backend API to get CSV, then trigger download
     const response = await fetch("/api/export_my_loan_history");
     const blob = await response.blob();
     const url = window.URL.createObjectURL(blob);
