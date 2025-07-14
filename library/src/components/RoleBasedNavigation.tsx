@@ -82,7 +82,7 @@ const navigationItems: NavigationItem[] = [
     icon: '⏰'
   },
   {
-    label: 'Create Test Users',
+    label: 'Create Users',
     path: '/create-test-users',
     roles: ['Library Manager','Librarian'],
     requireAdmin: true,

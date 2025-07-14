@@ -101,7 +101,7 @@ const Members = () => {
 
   return (
     <MainLayout>
-      <Flex direction="column" gap="4">
+      <Flex direction="column" gap="4" className="mt-20">
         <Flex justify="between" align="center">
           <Heading className="text-gray-900 dark:text-gray-100">Member List</Heading>
           <Button onClick={() => navigate("/members/new")}
