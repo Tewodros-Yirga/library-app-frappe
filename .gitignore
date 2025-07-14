@@ -67,3 +67,4 @@ library_app/www/library.html
 /library/yarn-error.log*
 /library/.parcel-cache/
 /library/.vite/ 
+.cursorignore
