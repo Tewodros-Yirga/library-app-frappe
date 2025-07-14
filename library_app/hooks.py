@@ -494,6 +494,12 @@ api_methods = {
     
     "library_app.api.register_user": "POST",
 
+    "library_app.api.list_all_users": "GET",
+    "library_app.api.set_user_roles": "POST",
+    "library_app.api.reset_user_password": "POST",
+    "library_app.api.get_loan_details": "GET",
+    "library_app.api.get_reservation_details": "GET",
+
 }
 
 

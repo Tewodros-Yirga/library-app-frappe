@@ -864,3 +864,66 @@ def get_current_user_roles():
     except Exception as e:
         frappe.log_error(frappe.get_traceback(), "Error getting user roles")
         return {"roles": [], "user": None, "error": str(e)}
+
+
+@frappe.whitelist()
+def list_all_users():
+    """List all Frappe users with their roles and status."""
+    users = frappe.get_all(
+        "User",
+        filters={"enabled": 1, "user_type": ["!=", "Website User"]},  # Exclude system/website users if needed
+        fields=["name", "email", "first_name", "last_name", "enabled", "last_login"]
+    )
+    for user in users:
+        user["roles"] = [r.role for r in frappe.get_all("Has Role", filters={"parent": user["name"]}, fields=["role"])]
+    return users
+
+@frappe.whitelist()
+def set_user_roles(user_email, roles):
+    """Set roles for a user. Only admin can call this."""
+    if not frappe.session.user or "System Manager" not in frappe.get_roles():
+        frappe.throw("Only System Manager can change user roles.")
+    user = frappe.get_doc("User", user_email)
+    user.set("roles", [{"role": r} for r in roles])
+    user.save()
+    frappe.db.commit()
+    return {"message": f"Roles updated for {user_email}"}
+
+
+@frappe.whitelist()
+def reset_user_password(user_email, new_password):
+    """Reset a user's password. Only admin can call this."""
+    if not frappe.session.user or "System Manager" not in frappe.get_roles():
+        frappe.throw("Only System Manager can reset passwords.")
+    user = frappe.get_doc("User", user_email)
+    user.new_password = new_password
+    user.save()
+    frappe.db.commit()
+    return {"message": f"Password reset for {user_email}"}
+
+@frappe.whitelist()
+def get_loan_details(loan_name):
+    """Get full details for a specific loan, including book and member info."""
+    loan = frappe.get_doc("Loan", loan_name)
+    book = frappe.get_doc("Book", loan.book)
+    member = frappe.get_doc("Member", loan.member)
+    return {
+        "loan": loan.as_dict(),
+        "book": book.as_dict(),
+        "member": member.as_dict()
+    }
+
+
+@frappe.whitelist()
+def get_reservation_details(reservation_name):
+    """Get full details for a specific reservation, including book and member info."""
+    reservation = frappe.get_doc("Reservation", reservation_name)
+    book = frappe.get_doc("Book", reservation.book)
+    member = frappe.get_doc("Member", reservation.member)
+    return {
+        "reservation": reservation.as_dict(),
+        "book": book.as_dict(),
+        "member": member.as_dict()
+    }
+
+
