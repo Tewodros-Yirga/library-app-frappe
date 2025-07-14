@@ -55,7 +55,7 @@ const MyLoans = () => {
       <MainLayout>
         <Flex justify="center" align="center" className="h-64">
           <Spinner size="3" />
-          <Text ml="2">Loading your loans...</Text>
+          <Text ml="2" className="text-gray-600 dark:text-gray-300">Loading your loans...</Text>
         </Flex>
       </MainLayout>
     );
@@ -64,8 +64,8 @@ const MyLoans = () => {
   if (error) {
     return (
       <MainLayout>
-        <Callout.Root color="red">
-          <Callout.Text>Error: {error}</Callout.Text>
+        <Callout.Root color="red" className="border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-950">
+          <Callout.Text className="text-red-700 dark:text-red-200">Error: {error}</Callout.Text>
         </Callout.Root>
       </MainLayout>
     );
@@ -74,23 +74,23 @@ const MyLoans = () => {
   return (
     <MainLayout>
       <Flex direction="column" gap="4">
-        <Heading>My Loans</Heading>
+        <Heading className="text-gray-900 dark:text-gray-100">My Loans</Heading>
 
         {loans.length > 0 ? (
-          <Table.Root variant="surface">
+          <Table.Root variant="surface" className="bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100">
             <Table.Header>
               <Table.Row>
-                <Table.ColumnHeaderCell>Book Title</Table.ColumnHeaderCell>
-                <Table.ColumnHeaderCell>Author</Table.ColumnHeaderCell>
-                <Table.ColumnHeaderCell>Loan Date</Table.ColumnHeaderCell>
-                <Table.ColumnHeaderCell>Return Date</Table.ColumnHeaderCell>
-                <Table.ColumnHeaderCell>Status</Table.ColumnHeaderCell>
+                <Table.ColumnHeaderCell className="bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100">Book Title</Table.ColumnHeaderCell>
+                <Table.ColumnHeaderCell className="bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100">Author</Table.ColumnHeaderCell>
+                <Table.ColumnHeaderCell className="bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100">Loan Date</Table.ColumnHeaderCell>
+                <Table.ColumnHeaderCell className="bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100">Return Date</Table.ColumnHeaderCell>
+                <Table.ColumnHeaderCell className="bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100">Status</Table.ColumnHeaderCell>
               </Table.Row>
             </Table.Header>
 
             <Table.Body>
               {loans.map((loan) => (
-                <Table.Row key={loan.name}>
+                <Table.Row key={loan.name} className="hover:bg-gray-50 dark:hover:bg-gray-800">
                   <Table.Cell>{loan.book_title}</Table.Cell>
                   <Table.Cell>{loan.book_author}</Table.Cell>
                   <Table.Cell>{loan.loan_date}</Table.Cell>
@@ -109,8 +109,16 @@ const MyLoans = () => {
             </Table.Body>
           </Table.Root>
         ) : (
-          <Box>
-            <Text>You don't have any loans yet.</Text>
+          <Box className="p-12 bg-white dark:bg-gray-900 border-0 shadow-lg dark:shadow-xl text-center rounded-lg">
+            <div className="space-y-4">
+              <div className="text-6xl">📚</div>
+              <Heading size="4" className="text-gray-900 dark:text-gray-100">
+                You don't have any loans yet.
+              </Heading>
+              <Text className="text-gray-600 dark:text-gray-300">
+                Browse books and borrow your first one!
+              </Text>
+            </div>
           </Box>
         )}
       </Flex>

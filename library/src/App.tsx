@@ -1,5 +1,5 @@
 // library-bench/apps/library_app/library/src/App.tsx
-import { useState } from "react";
+import { useState, useEffect, createContext, useContext } from "react";
 import { FrappeProvider, useFrappeAuth } from "frappe-react-sdk";
 import "@radix-ui/themes/styles.css";
 import { Theme } from "@radix-ui/themes";
@@ -9,6 +9,7 @@ import {
   Route,
   Navigate,
 } from "react-router-dom";
+import type { JSX } from 'react';
 
 // Import pages
 import Login from "./pages/auth/Login";
@@ -26,6 +27,32 @@ import CreateTestUsers from "./pages/CreateTestUsers"; // For creating test user
 
 // Import role-based components
 import { RoleBasedRoute, LibrarianOnly, MemberOnly } from "./components/RoleBasedRoute";
+
+// Theme context
+const ThemeContext = createContext({
+  theme: "dark",
+  setTheme: (t: "dark" | "light") => {},
+});
+export const useTheme = () => useContext(ThemeContext);
+
+const THEME_KEY = "library_theme";
+
+const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
+  const [theme, setTheme] = useState<"dark" | "light">(() => {
+    return (localStorage.getItem(THEME_KEY) as "dark" | "light") || "dark";
+  });
+  useEffect(() => {
+    localStorage.setItem(THEME_KEY, theme);
+    if (theme === "dark") {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+  }, [theme]);
+  return (
+    <ThemeContext.Provider value={{ theme, setTheme }}>{children}</ThemeContext.Provider>
+  );
+};
 
 // A simple wrapper component to protect routes
 const PrivateRoute = ({ children }: { children: JSX.Element }) => {
@@ -47,161 +74,170 @@ const PrivateRoute = ({ children }: { children: JSX.Element }) => {
 function App() {
   // Helper to get the site name, robust for Frappe v15/16
   const getSiteName = () => {
-    //@ts-ignore
+    // @ts-ignore
     if (
+      // @ts-ignore
       window.frappe?.boot?.versions?.frappe &&
+      // @ts-ignore
       (window.frappe.boot.versions.frappe.startsWith("15") ||
         window.frappe.boot.versions.frappe.startsWith("16"))
     ) {
-      //@ts-ignore
+      // @ts-ignore
       return window.frappe?.boot?.sitename ?? import.meta.env.VITE_SITE_NAME;
     }
     return import.meta.env.VITE_SITE_NAME;
   };
 
+  // Use theme context
   return (
-    <div className="App">
-      <Theme appearance="dark" accentColor="iris" panelBackground="translucent">
-        <FrappeProvider
-          socketPort={import.meta.env.VITE_SOCKET_PORT}
-          siteName={getSiteName()}
-        >
-          <Router>
-            <Routes>
-              {/* Public Route */}
-              <Route path="/login" element={<Login />} />
+    <ThemeProvider>
+      <ThemeConsumerApp getSiteName={getSiteName} />
+    </ThemeProvider>
+  );
+}
 
-              {/* Protected Routes */}
-              <Route
-                path="/"
-                element={
-                  <PrivateRoute>
-                    <Dashboard />
-                  </PrivateRoute>
-                }
-              />
-              <Route
-                path="/books"
-                element={
-                  <PrivateRoute>
-                    <Books />
-                  </PrivateRoute>
-                }
-              />
-              <Route
-                path="/books/new"
-                element={
-                  <PrivateRoute>
-                    <LibrarianOnly>
-                      <BookForm />
-                    </LibrarianOnly>
-                  </PrivateRoute>
-                }
-              />
-              <Route
-                path="/books/edit/:name"
-                element={
-                  <PrivateRoute>
-                    <LibrarianOnly>
-                      <BookForm />
-                    </LibrarianOnly>
-                  </PrivateRoute>
-                }
-              />
-              <Route
-                path="/members"
-                element={
-                  <PrivateRoute>
-                    <LibrarianOnly>
-                      <Members />
-                    </LibrarianOnly>
-                  </PrivateRoute>
-                }
-              />
-              <Route
-                path="/members/new"
-                element={
-                  <PrivateRoute>
-                    <LibrarianOnly>
-                      <MemberForm />
-                    </LibrarianOnly>
-                  </PrivateRoute>
-                }
-              />
-              <Route
-                path="/members/edit/:name"
-                element={
-                  <PrivateRoute>
-                    <LibrarianOnly>
-                      <MemberForm />
-                    </LibrarianOnly>
-                  </PrivateRoute>
-                }
-              />
-              <Route
-                path="/loans"
-                element={
-                  <PrivateRoute>
-                    <LibrarianOnly>
-                      <Loans />
-                    </LibrarianOnly>
-                  </PrivateRoute>
-                }
-              />
-              <Route
-                path="/loans/new"
-                element={
-                  <PrivateRoute>
-                    <LibrarianOnly>
-                      <LoanForm />
-                    </LibrarianOnly>
-                  </PrivateRoute>
-                }
-              />
-              <Route
-                path="/reservations"
-                element={
-                  <PrivateRoute>
-                    <Reservations />
-                  </PrivateRoute>
-                }
-              />
-              <Route
-                path="/my-loans"
-                element={
-                  <PrivateRoute>
-                    <MemberOnly>
-                      <MyLoans />
-                    </MemberOnly>
-                  </PrivateRoute>
-                }
-              />
-              <Route
-                path="/my-reservations"
-                element={
-                  <PrivateRoute>
-                    <MemberOnly>
-                      <MyReservations />
-                    </MemberOnly>
-                  </PrivateRoute>
-                }
-              />
-              <Route
-                path="/create-test-users"
-                element={
-                  <PrivateRoute>
-                    <CreateTestUsers />
-                  </PrivateRoute>
-                }
-              />
-
-              {/* Redirect any unmatched route to login (or a 404 page) */}
-              <Route path="*" element={<Navigate to="/login" replace />} />
-            </Routes>
-          </Router>
-        </FrappeProvider>
-      </Theme>
-    </div>
+function ThemeConsumerApp({ getSiteName }: { getSiteName: () => string }) {
+  const { theme } = useTheme();
+  // Only allow 'dark' or 'light' for Radix Theme
+  const radixTheme: 'dark' | 'light' = theme === 'dark' ? 'dark' : 'light';
+  return (
+    <Theme appearance={radixTheme} accentColor="iris" panelBackground="translucent">
+      <FrappeProvider
+        socketPort={import.meta.env.VITE_SOCKET_PORT}
+        siteName={getSiteName()}
+      >
+        <Router>
+          <Routes>
+            {/* Login page always dark, no theme switch */}
+            <Route path="/login" element={<Login alwaysDark />} />
+            {/* All other pages use theme context */}
+            <Route
+              path="/"
+              element={
+                <PrivateRoute>
+                  <Dashboard />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/books"
+              element={
+                <PrivateRoute>
+                  <Books />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/books/new"
+              element={
+                <PrivateRoute>
+                  <LibrarianOnly>
+                    <BookForm />
+                  </LibrarianOnly>
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/books/edit/:name"
+              element={
+                <PrivateRoute>
+                  <LibrarianOnly>
+                    <BookForm />
+                  </LibrarianOnly>
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/members"
+              element={
+                <PrivateRoute>
+                  <LibrarianOnly>
+                    <Members />
+                  </LibrarianOnly>
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/members/new"
+              element={
+                <PrivateRoute>
+                  <LibrarianOnly>
+                    <MemberForm />
+                  </LibrarianOnly>
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/members/edit/:name"
+              element={
+                <PrivateRoute>
+                  <LibrarianOnly>
+                    <MemberForm />
+                  </LibrarianOnly>
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/loans"
+              element={
+                <PrivateRoute>
+                  <LibrarianOnly>
+                    <Loans />
+                  </LibrarianOnly>
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/loans/new"
+              element={
+                <PrivateRoute>
+                  <LibrarianOnly>
+                    <LoanForm />
+                  </LibrarianOnly>
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/reservations"
+              element={
+                <PrivateRoute>
+                  <Reservations />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/my-loans"
+              element={
+                <PrivateRoute>
+                  <MemberOnly>
+                    <MyLoans />
+                  </MemberOnly>
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/my-reservations"
+              element={
+                <PrivateRoute>
+                  <MemberOnly>
+                    <MyReservations />
+                  </MemberOnly>
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/create-test-users"
+              element={
+                <PrivateRoute>
+                  <CreateTestUsers />
+                </PrivateRoute>
+              }
+            />
+            <Route path="*" element={<Navigate to="/login" replace />} />
+          </Routes>
+        </Router>
+      </FrappeProvider>
+    </Theme>
   );
 }
 

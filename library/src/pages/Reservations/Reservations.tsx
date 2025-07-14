@@ -105,7 +105,7 @@ const Reservations = () => {
       <MainLayout>
         <Flex justify="center" align="center" className="h-full">
           <Spinner size="3" />
-          <Text ml="2">Loading reservations...</Text>
+          <Text ml="2" className="text-gray-600 dark:text-gray-300">Loading reservations...</Text>
         </Flex>
       </MainLayout>
     );
@@ -114,8 +114,8 @@ const Reservations = () => {
   if (error) {
     return (
       <MainLayout>
-        <Callout.Root color="red">
-          <Callout.Text>Error: {error}</Callout.Text>
+        <Callout.Root color="red" className="border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-950">
+          <Callout.Text className="text-red-700 dark:text-red-200">Error: {error}</Callout.Text>
         </Callout.Root>
       </MainLayout>
     );
@@ -125,43 +125,45 @@ const Reservations = () => {
     <MainLayout>
       <Flex direction="column" gap="4">
         <Flex justify="between" align="center">
-          <Heading>Book Reservations</Heading>
-          <Button onClick={() => navigate("/books")} variant="soft">
+          <Heading className="text-gray-900 dark:text-gray-100">Book Reservations</Heading>
+          <Button onClick={() => navigate("/books")} variant="soft"
+            className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-medium px-6 py-3 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl dark:shadow-xl"
+          >
             Browse Books
           </Button>
         </Flex>
 
         {cancelling && (
-          <Callout.Root color="yellow">
-            <Callout.Text>
+          <Callout.Root color="yellow" className="border-yellow-200 dark:border-yellow-800 bg-yellow-50 dark:bg-yellow-950">
+            <Callout.Text className="text-yellow-700 dark:text-yellow-200">
               <Spinner size="1" /> Cancelling reservation...
             </Callout.Text>
           </Callout.Root>
         )}
 
         {reservations.length > 0 ? (
-          <Table.Root variant="surface">
+          <Table.Root variant="surface" className="bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100">
             <Table.Header>
               <Table.Row>
-                <Table.ColumnHeaderCell>Book</Table.ColumnHeaderCell>
-                <Table.ColumnHeaderCell>Member</Table.ColumnHeaderCell>
-                <Table.ColumnHeaderCell>Reservation Date</Table.ColumnHeaderCell>
-                <Table.ColumnHeaderCell>Status</Table.ColumnHeaderCell>
-                <Table.ColumnHeaderCell>Actions</Table.ColumnHeaderCell>
+                <Table.ColumnHeaderCell className="bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100">Book</Table.ColumnHeaderCell>
+                <Table.ColumnHeaderCell className="bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100">Member</Table.ColumnHeaderCell>
+                <Table.ColumnHeaderCell className="bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100">Reservation Date</Table.ColumnHeaderCell>
+                <Table.ColumnHeaderCell className="bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100">Status</Table.ColumnHeaderCell>
+                <Table.ColumnHeaderCell className="bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100">Actions</Table.ColumnHeaderCell>
               </Table.Row>
             </Table.Header>
 
             <Table.Body>
               {reservations.map((reservation: ReservationData) => (
-                <Table.Row key={reservation.name}>
+                <Table.Row key={reservation.name} className="hover:bg-gray-50 dark:hover:bg-gray-800">
                   <Table.Cell>
-                    <Text weight="medium">{reservation.book_title || reservation.book}</Text>
+                    <Text weight="medium" className="text-gray-900 dark:text-gray-100">{reservation.book_title || reservation.book}</Text>
                   </Table.Cell>
                   <Table.Cell>
-                    <Text>{reservation.member_name || reservation.member}</Text>
+                    <Text className="text-gray-700 dark:text-gray-300">{reservation.member_name || reservation.member}</Text>
                   </Table.Cell>
                   <Table.Cell>
-                    <Text>{new Date(reservation.reservation_date).toLocaleDateString()}</Text>
+                    <Text className="text-gray-700 dark:text-gray-300">{new Date(reservation.reservation_date).toLocaleDateString()}</Text>
                   </Table.Cell>
                   <Table.Cell>
                     <Badge color={getStatusColor(reservation.status)}>
@@ -181,8 +183,8 @@ const Reservations = () => {
                           </IconButton>
                         </AlertDialog.Trigger>
                         <AlertDialog.Content>
-                          <AlertDialog.Title>Cancel Reservation</AlertDialog.Title>
-                          <AlertDialog.Description size="2">
+                          <AlertDialog.Title className="text-gray-900 dark:text-gray-100">Cancel Reservation</AlertDialog.Title>
+                          <AlertDialog.Description size="2" className="text-gray-700 dark:text-gray-300">
                             Are you sure you want to cancel the reservation for "{reservation.book_title || reservation.book}"?
                             This action cannot be undone.
                           </AlertDialog.Description>
@@ -215,8 +217,22 @@ const Reservations = () => {
             </Table.Body>
           </Table.Root>
         ) : (
-          <Box>
-            <Text>No reservations found.</Text>
+          <Box className="p-12 bg-white dark:bg-gray-900 border-0 shadow-lg dark:shadow-xl text-center rounded-lg">
+            <div className="space-y-4">
+              <div className="text-6xl">⏰</div>
+              <Heading size="4" className="text-gray-900 dark:text-gray-100">
+                No reservations found
+              </Heading>
+              <Text className="text-gray-600 dark:text-gray-300">
+                Get started by reserving a book
+              </Text>
+              <Button 
+                onClick={() => navigate("/books")}
+                className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-medium px-6 py-3 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl dark:shadow-xl"
+              >
+                Browse Books
+              </Button>
+            </div>
           </Box>
         )}
       </Flex>

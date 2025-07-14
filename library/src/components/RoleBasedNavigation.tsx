@@ -137,8 +137,8 @@ export const RoleBasedNavigation = () => {
             to={item.path}
             className={`px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
               isActive(item.path)
-                ? 'bg-blue-100 text-blue-700 border border-blue-200'
-                : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900'
+                ? 'bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-200 border border-blue-200 dark:border-blue-800'
+                : 'text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-gray-100'
             }`}
           >
             <span className="mr-1">{item.icon}</span>
@@ -151,18 +151,18 @@ export const RoleBasedNavigation = () => {
       {librarianItems.length > 0 && (
         <DropdownMenu.Root>
           <DropdownMenu.Trigger>
-            <Button variant="ghost" className="text-gray-700 hover:bg-gray-100">
+            <Button variant="ghost" className="text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800">
               <span className="mr-1">📚</span>
               <span className="hidden sm:inline">Manage</span>
             </Button>
           </DropdownMenu.Trigger>
-          <DropdownMenu.Content>
+          <DropdownMenu.Content className="bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 border border-gray-200 dark:border-gray-800">
             {librarianItems.map((item) => (
               <DropdownMenu.Item key={item.path} asChild>
                 <Link
                   to={item.path}
                   className={`flex items-center gap-2 ${
-                    isActive(item.path) ? 'bg-blue-50 text-blue-700' : ''
+                    isActive(item.path) ? 'bg-blue-50 dark:bg-blue-900 text-blue-700 dark:text-blue-200' : ''
                   }`}
                 >
                   <span>{item.icon}</span>
@@ -178,18 +178,18 @@ export const RoleBasedNavigation = () => {
       {memberItems.length > 0 && (
         <DropdownMenu.Root>
           <DropdownMenu.Trigger>
-            <Button variant="ghost" className="text-gray-700 hover:bg-gray-100">
+            <Button variant="ghost" className="text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800">
               <span className="mr-1">👤</span>
               <span className="hidden sm:inline">My Account</span>
             </Button>
           </DropdownMenu.Trigger>
-          <DropdownMenu.Content>
+          <DropdownMenu.Content className="bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 border border-gray-200 dark:border-gray-800">
             {memberItems.map((item) => (
               <DropdownMenu.Item key={item.path} asChild>
                 <Link
                   to={item.path}
                   className={`flex items-center gap-2 ${
-                    isActive(item.path) ? 'bg-blue-50 text-blue-700' : ''
+                    isActive(item.path) ? 'bg-blue-50 dark:bg-blue-900 text-blue-700 dark:text-blue-200' : ''
                   }`}
                 >
                   <span>{item.icon}</span>
@@ -205,18 +205,18 @@ export const RoleBasedNavigation = () => {
       {adminItems.length > 0 && (
         <DropdownMenu.Root>
           <DropdownMenu.Trigger>
-            <Button variant="ghost" className="text-gray-700 hover:bg-gray-100">
+            <Button variant="ghost" className="text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800">
               <span className="mr-1">⚙️</span>
               <span className="hidden sm:inline">Admin</span>
             </Button>
           </DropdownMenu.Trigger>
-          <DropdownMenu.Content>
+          <DropdownMenu.Content className="bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 border border-gray-200 dark:border-gray-800">
             {adminItems.map((item) => (
               <DropdownMenu.Item key={item.path} asChild>
                 <Link
                   to={item.path}
                   className={`flex items-center gap-2 ${
-                    isActive(item.path) ? 'bg-blue-50 text-blue-700' : ''
+                    isActive(item.path) ? 'bg-blue-50 dark:bg-blue-900 text-blue-700 dark:text-blue-200' : ''
                   }`}
                 >
                   <span>{item.icon}</span>
@@ -232,18 +232,18 @@ export const RoleBasedNavigation = () => {
       <div className="md:hidden">
         <DropdownMenu.Root>
           <DropdownMenu.Trigger>
-            <Button variant="ghost" className="text-gray-700 hover:bg-gray-100">
+            <Button variant="ghost" className="text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800">
               <span className="mr-1">☰</span>
               Menu
             </Button>
           </DropdownMenu.Trigger>
-          <DropdownMenu.Content>
+          <DropdownMenu.Content className="bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 border border-gray-200 dark:border-gray-800">
             {visibleItems.map((item) => (
               <DropdownMenu.Item key={item.path} asChild>
                 <Link
                   to={item.path}
                   className={`flex items-center gap-2 ${
-                    isActive(item.path) ? 'bg-blue-50 text-blue-700' : ''
+                    isActive(item.path) ? 'bg-blue-50 dark:bg-blue-900 text-blue-700 dark:text-blue-200' : ''
                   }`}
                 >
                   <span>{item.icon}</span>

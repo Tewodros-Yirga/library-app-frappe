@@ -93,7 +93,7 @@ const Dashboard = () => {
         <div className="flex justify-center items-center h-64">
           <div className="text-center">
             <Spinner size="3" />
-            <Text className="mt-4 text-gray-600">Loading dashboard...</Text>
+            <Text className="mt-4 text-gray-600 dark:text-gray-300">Loading dashboard...</Text>
           </div>
         </div>
       </MainLayout>
@@ -103,8 +103,8 @@ const Dashboard = () => {
   if (error) {
     return (
       <MainLayout>
-        <Callout.Root color="red" className="border-red-200 bg-red-50">
-          <Callout.Text className="text-red-700">Error: {error}</Callout.Text>
+        <Callout.Root color="red" className="border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-950">
+          <Callout.Text className="text-red-700 dark:text-red-200">Error: {error}</Callout.Text>
         </Callout.Root>
       </MainLayout>
     );
@@ -115,61 +115,65 @@ const Dashboard = () => {
       <div className="space-y-8">
         {/* Header */}
         <div className="space-y-2">
-          <Heading size="8" className="text-gray-900">Library Dashboard</Heading>
-          <Text className="text-gray-600 text-lg">
+          <Heading size="8" className="text-gray-900 dark:text-gray-100">Library Dashboard</Heading>
+          <Text className="text-gray-600 dark:text-gray-300 text-lg">
             Welcome to your library management system. Here's an overview of your library.
           </Text>
         </div>
 
         {/* Statistics Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <Card className="p-6 bg-gradient-to-br from-blue-50 to-blue-100 border-0 shadow-lg hover:shadow-xl transition-shadow">
+          {/* Card 1 */}
+          <Card className="p-6 bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900 dark:to-blue-950 border-0 shadow-lg hover:shadow-xl transition-shadow">
             <div className="flex items-center justify-between">
               <div>
-                <Text className="text-blue-600 font-medium text-sm uppercase tracking-wide">Total Books</Text>
-                <Heading size="6" className="text-gray-900 mt-1">{stats?.totalBooks || 0}</Heading>
-                <Text className="text-blue-600 text-sm mt-1">In library catalog</Text>
+                <Text className="text-blue-600 dark:text-blue-300 font-medium text-sm uppercase tracking-wide">Total Books</Text>
+                <Heading size="6" className="text-gray-900 dark:text-gray-100 mt-1">{stats?.totalBooks || 0}</Heading>
+                <Text className="text-blue-600 dark:text-blue-300 text-sm mt-1">In library catalog</Text>
               </div>
-              <div className="w-12 h-12 bg-blue-500 rounded-lg flex items-center justify-center">
+              <div className="w-12 h-12 bg-blue-500 dark:bg-blue-700 rounded-lg flex items-center justify-center">
                 <span className="text-white font-bold text-lg">📚</span>
               </div>
             </div>
           </Card>
 
-          <Card className="p-6 bg-gradient-to-br from-green-50 to-green-100 border-0 shadow-lg hover:shadow-xl transition-shadow">
+          {/* Card 2 */}
+          <Card className="p-6 bg-gradient-to-br from-green-50 to-green-100 dark:from-green-900 dark:to-green-950 border-0 shadow-lg hover:shadow-xl transition-shadow">
             <div className="flex items-center justify-between">
               <div>
-                <Text className="text-green-600 font-medium text-sm uppercase tracking-wide">Available Books</Text>
-                <Heading size="6" className="text-gray-900 mt-1">{stats?.availableBooks || 0}</Heading>
-                <Text className="text-green-600 text-sm mt-1">Ready for loan</Text>
+                <Text className="text-green-600 dark:text-green-300 font-medium text-sm uppercase tracking-wide">Available Books</Text>
+                <Heading size="6" className="text-gray-900 dark:text-gray-100 mt-1">{stats?.availableBooks || 0}</Heading>
+                <Text className="text-green-600 dark:text-green-300 text-sm mt-1">Ready for loan</Text>
               </div>
-              <div className="w-12 h-12 bg-green-500 rounded-lg flex items-center justify-center">
+              <div className="w-12 h-12 bg-green-500 dark:bg-green-700 rounded-lg flex items-center justify-center">
                 <span className="text-white font-bold text-lg">✅</span>
               </div>
             </div>
           </Card>
 
-          <Card className="p-6 bg-gradient-to-br from-purple-50 to-purple-100 border-0 shadow-lg hover:shadow-xl transition-shadow">
+          {/* Card 3 */}
+          <Card className="p-6 bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-900 dark:to-purple-950 border-0 shadow-lg hover:shadow-xl transition-shadow">
             <div className="flex items-center justify-between">
               <div>
-                <Text className="text-purple-600 font-medium text-sm uppercase tracking-wide">Books on Loan</Text>
-                <Heading size="6" className="text-gray-900 mt-1">{stats?.booksOnLoan || 0}</Heading>
-                <Text className="text-purple-600 text-sm mt-1">Currently borrowed</Text>
+                <Text className="text-purple-600 dark:text-purple-300 font-medium text-sm uppercase tracking-wide">Books on Loan</Text>
+                <Heading size="6" className="text-gray-900 dark:text-gray-100 mt-1">{stats?.booksOnLoan || 0}</Heading>
+                <Text className="text-purple-600 dark:text-purple-300 text-sm mt-1">Currently borrowed</Text>
               </div>
-              <div className="w-12 h-12 bg-purple-500 rounded-lg flex items-center justify-center">
+              <div className="w-12 h-12 bg-purple-500 dark:bg-purple-700 rounded-lg flex items-center justify-center">
                 <span className="text-white font-bold text-lg">📖</span>
               </div>
             </div>
           </Card>
 
-          <Card className="p-6 bg-gradient-to-br from-yellow-50 to-yellow-100 border-0 shadow-lg hover:shadow-xl transition-shadow">
+          {/* Card 4 */}
+          <Card className="p-6 bg-gradient-to-br from-yellow-50 to-yellow-100 dark:from-yellow-900 dark:to-yellow-950 border-0 shadow-lg hover:shadow-xl transition-shadow">
             <div className="flex items-center justify-between">
               <div>
-                <Text className="text-yellow-600 font-medium text-sm uppercase tracking-wide">Reserved Books</Text>
-                <Heading size="6" className="text-gray-900 mt-1">{stats?.reservedBooks || 0}</Heading>
-                <Text className="text-yellow-600 text-sm mt-1">Waiting for pickup</Text>
+                <Text className="text-yellow-600 dark:text-yellow-300 font-medium text-sm uppercase tracking-wide">Reserved Books</Text>
+                <Heading size="6" className="text-gray-900 dark:text-gray-100 mt-1">{stats?.reservedBooks || 0}</Heading>
+                <Text className="text-yellow-600 dark:text-yellow-300 text-sm mt-1">Waiting for pickup</Text>
               </div>
-              <div className="w-12 h-12 bg-yellow-500 rounded-lg flex items-center justify-center">
+              <div className="w-12 h-12 bg-yellow-500 dark:bg-yellow-700 rounded-lg flex items-center justify-center">
                 <span className="text-white font-bold text-lg">⏰</span>
               </div>
             </div>
@@ -178,40 +182,40 @@ const Dashboard = () => {
 
         {/* Second Row of Statistics */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <Card className="p-6 bg-gradient-to-br from-indigo-50 to-indigo-100 border-0 shadow-lg hover:shadow-xl transition-shadow">
+          <Card className="p-6 bg-gradient-to-br from-indigo-50 to-indigo-100 dark:from-indigo-900 dark:to-indigo-950 border-0 shadow-lg hover:shadow-xl transition-shadow">
             <div className="flex items-center justify-between">
               <div>
-                <Text className="text-indigo-600 font-medium text-sm uppercase tracking-wide">Total Members</Text>
-                <Heading size="6" className="text-gray-900 mt-1">{stats?.totalMembers || 0}</Heading>
-                <Text className="text-indigo-600 text-sm mt-1">Registered members</Text>
+                <Text className="text-indigo-600 dark:text-indigo-300 font-medium text-sm uppercase tracking-wide">Total Members</Text>
+                <Heading size="6" className="text-gray-900 dark:text-gray-100 mt-1">{stats?.totalMembers || 0}</Heading>
+                <Text className="text-indigo-600 dark:text-indigo-300 text-sm mt-1">Registered members</Text>
               </div>
-              <div className="w-12 h-12 bg-indigo-500 rounded-lg flex items-center justify-center">
+              <div className="w-12 h-12 bg-indigo-500 dark:bg-indigo-700 rounded-lg flex items-center justify-center">
                 <span className="text-white font-bold text-lg">👥</span>
               </div>
             </div>
           </Card>
 
-          <Card className="p-6 bg-gradient-to-br from-cyan-50 to-cyan-100 border-0 shadow-lg hover:shadow-xl transition-shadow">
+          <Card className="p-6 bg-gradient-to-br from-cyan-50 to-cyan-100 dark:from-cyan-900 dark:to-cyan-950 border-0 shadow-lg hover:shadow-xl transition-shadow">
             <div className="flex items-center justify-between">
               <div>
-                <Text className="text-cyan-600 font-medium text-sm uppercase tracking-wide">Active Loans</Text>
-                <Heading size="6" className="text-gray-900 mt-1">{stats?.totalLoans || 0}</Heading>
-                <Text className="text-cyan-600 text-sm mt-1">Current loans</Text>
+                <Text className="text-cyan-600 dark:text-cyan-300 font-medium text-sm uppercase tracking-wide">Active Loans</Text>
+                <Heading size="6" className="text-gray-900 dark:text-gray-100 mt-1">{stats?.totalLoans || 0}</Heading>
+                <Text className="text-cyan-600 dark:text-cyan-300 text-sm mt-1">Current loans</Text>
               </div>
-              <div className="w-12 h-12 bg-cyan-500 rounded-lg flex items-center justify-center">
+              <div className="w-12 h-12 bg-cyan-500 dark:bg-cyan-700 rounded-lg flex items-center justify-center">
                 <span className="text-white font-bold text-lg">📋</span>
               </div>
             </div>
           </Card>
 
-          <Card className="p-6 bg-gradient-to-br from-red-50 to-red-100 border-0 shadow-lg hover:shadow-xl transition-shadow">
+          <Card className="p-6 bg-gradient-to-br from-red-50 to-red-100 dark:from-red-900 dark:to-red-950 border-0 shadow-lg hover:shadow-xl transition-shadow">
             <div className="flex items-center justify-between">
               <div>
-                <Text className="text-red-600 font-medium text-sm uppercase tracking-wide">Overdue Books</Text>
-                <Heading size="6" className="text-gray-900 mt-1">{stats?.overdueBooks || 0}</Heading>
-                <Text className="text-red-600 text-sm mt-1">Need attention</Text>
+                <Text className="text-red-600 dark:text-red-300 font-medium text-sm uppercase tracking-wide">Overdue Books</Text>
+                <Heading size="6" className="text-gray-900 dark:text-gray-100 mt-1">{stats?.overdueBooks || 0}</Heading>
+                <Text className="text-red-600 dark:text-red-300 text-sm mt-1">Need attention</Text>
               </div>
-              <div className="w-12 h-12 bg-red-500 rounded-lg flex items-center justify-center">
+              <div className="w-12 h-12 bg-red-500 dark:bg-red-700 rounded-lg flex items-center justify-center">
                 <span className="text-white font-bold text-lg">⚠️</span>
               </div>
             </div>
@@ -219,10 +223,10 @@ const Dashboard = () => {
         </div>
 
         {/* Quick Actions */}
-        <Card className="p-8 bg-white border-0 shadow-lg">
+        <Card className="p-8 bg-white dark:bg-gray-900 border-0 shadow-lg dark:shadow-xl">
           <div className="space-y-6">
             <div className="flex items-center gap-3">
-              <Heading size="5" className="text-gray-900">Quick Actions</Heading>
+              <Heading size="5" className="text-gray-900 dark:text-gray-100">Quick Actions</Heading>
               <Badge variant="soft" color="blue">
                 {isLibrarian ? "Librarian" : isMember ? "Member" : "Admin"}
               </Badge>
@@ -235,13 +239,13 @@ const Dashboard = () => {
                   <Button 
                     variant="soft" 
                     onClick={() => navigate("/books/new")}
-                    className="h-20 bg-gradient-to-r from-blue-50 to-blue-100 hover:from-blue-100 hover:to-blue-200 border border-blue-200 text-blue-700 hover:text-blue-800 transition-all duration-200"
+                    className="h-20 bg-gradient-to-r from-blue-50 to-blue-100 dark:from-blue-900 dark:to-blue-950 hover:from-blue-100 hover:to-blue-200 dark:hover:from-blue-800 dark:hover:to-blue-900 border border-blue-200 dark:border-blue-800 text-blue-700 dark:text-blue-200 hover:text-blue-800 dark:hover:text-blue-100 transition-all duration-200"
                   >
                     <div className="flex flex-col items-center gap-2">
                       <span className="text-2xl">📚</span>
                       <div className="text-center">
                         <Text className="font-medium">Add New Book</Text>
-                        <Text className="text-xs text-blue-600">Add to catalog</Text>
+                        <Text className="text-xs text-blue-600 dark:text-blue-200">Add to catalog</Text>
                       </div>
                     </div>
                   </Button>
@@ -249,13 +253,13 @@ const Dashboard = () => {
                   <Button 
                     variant="soft" 
                     onClick={() => navigate("/members/new")}
-                    className="h-20 bg-gradient-to-r from-green-50 to-green-100 hover:from-green-100 hover:to-green-200 border border-green-200 text-green-700 hover:text-green-800 transition-all duration-200"
+                    className="h-20 bg-gradient-to-r from-green-50 to-green-100 dark:from-green-900 dark:to-green-950 hover:from-green-100 hover:to-green-200 dark:hover:from-green-800 dark:hover:to-green-900 border border-green-200 dark:border-green-800 text-green-700 dark:text-green-200 hover:text-green-800 dark:hover:text-green-100 transition-all duration-200"
                   >
                     <div className="flex flex-col items-center gap-2">
                       <span className="text-2xl">👤</span>
                       <div className="text-center">
                         <Text className="font-medium">Add New Member</Text>
-                        <Text className="text-xs text-green-600">Register member</Text>
+                        <Text className="text-xs text-green-600 dark:text-green-200">Register member</Text>
                       </div>
                     </div>
                   </Button>
@@ -263,13 +267,13 @@ const Dashboard = () => {
                   <Button 
                     variant="soft" 
                     onClick={() => navigate("/loans/new")}
-                    className="h-20 bg-gradient-to-r from-purple-50 to-purple-100 hover:from-purple-100 hover:to-purple-200 border border-purple-200 text-purple-700 hover:text-purple-800 transition-all duration-200"
+                    className="h-20 bg-gradient-to-r from-purple-50 to-purple-100 dark:from-purple-900 dark:to-purple-950 hover:from-purple-100 hover:to-purple-200 dark:hover:from-purple-800 dark:hover:to-purple-900 border border-purple-200 dark:border-purple-800 text-purple-700 dark:text-purple-200 hover:text-purple-800 dark:hover:text-purple-100 transition-all duration-200"
                   >
                     <div className="flex flex-col items-center gap-2">
                       <span className="text-2xl">📖</span>
                       <div className="text-center">
                         <Text className="font-medium">Create Loan</Text>
-                        <Text className="text-xs text-purple-600">Loan a book</Text>
+                        <Text className="text-xs text-purple-600 dark:text-purple-200">Loan a book</Text>
                       </div>
                     </div>
                   </Button>
@@ -277,13 +281,13 @@ const Dashboard = () => {
                   <Button 
                     variant="soft" 
                     onClick={() => navigate("/loans")}
-                    className="h-20 bg-gradient-to-r from-cyan-50 to-cyan-100 hover:from-cyan-100 hover:to-cyan-200 border border-cyan-200 text-cyan-700 hover:text-cyan-800 transition-all duration-200"
+                    className="h-20 bg-gradient-to-r from-cyan-50 to-cyan-100 dark:from-cyan-900 dark:to-cyan-950 hover:from-cyan-100 hover:to-cyan-200 dark:hover:from-cyan-800 dark:hover:to-cyan-900 border border-cyan-200 dark:border-cyan-800 text-cyan-700 dark:text-cyan-200 hover:text-cyan-800 dark:hover:text-cyan-100 transition-all duration-200"
                   >
                     <div className="flex flex-col items-center gap-2">
                       <span className="text-2xl">📋</span>
                       <div className="text-center">
                         <Text className="font-medium">Manage Loans</Text>
-                        <Text className="text-xs text-cyan-600">View all loans</Text>
+                        <Text className="text-xs text-cyan-600 dark:text-cyan-200">View all loans</Text>
                       </div>
                     </div>
                   </Button>
@@ -296,13 +300,13 @@ const Dashboard = () => {
                   <Button 
                     variant="soft" 
                     onClick={() => navigate("/books")}
-                    className="h-20 bg-gradient-to-r from-blue-50 to-blue-100 hover:from-blue-100 hover:to-blue-200 border border-blue-200 text-blue-700 hover:text-blue-800 transition-all duration-200"
+                    className="h-20 bg-gradient-to-r from-blue-50 to-blue-100 dark:from-blue-900 dark:to-blue-950 hover:from-blue-100 hover:to-blue-200 dark:hover:from-blue-800 dark:hover:to-blue-900 border border-blue-200 dark:border-blue-800 text-blue-700 dark:text-blue-200 hover:text-blue-800 dark:hover:text-blue-100 transition-all duration-200"
                   >
                     <div className="flex flex-col items-center gap-2">
                       <span className="text-2xl">🔍</span>
                       <div className="text-center">
                         <Text className="font-medium">Browse Books</Text>
-                        <Text className="text-xs text-blue-600">View available books</Text>
+                        <Text className="text-xs text-blue-600 dark:text-blue-200">View available books</Text>
                       </div>
                     </div>
                   </Button>
@@ -310,13 +314,13 @@ const Dashboard = () => {
                   <Button 
                     variant="soft" 
                     onClick={() => navigate("/my-loans")}
-                    className="h-20 bg-gradient-to-r from-green-50 to-green-100 hover:from-green-100 hover:to-green-200 border border-green-200 text-green-700 hover:text-green-800 transition-all duration-200"
+                    className="h-20 bg-gradient-to-r from-green-50 to-green-100 dark:from-green-900 dark:to-green-950 hover:from-green-100 hover:to-green-200 dark:hover:from-green-800 dark:hover:to-green-900 border border-green-200 dark:border-green-800 text-green-700 dark:text-green-200 hover:text-green-800 dark:hover:text-green-100 transition-all duration-200"
                   >
                     <div className="flex flex-col items-center gap-2">
                       <span className="text-2xl">📚</span>
                       <div className="text-center">
                         <Text className="font-medium">My Loans</Text>
-                        <Text className="text-xs text-green-600">View my loans</Text>
+                        <Text className="text-xs text-green-600 dark:text-green-200">View my loans</Text>
                       </div>
                     </div>
                   </Button>
@@ -324,13 +328,13 @@ const Dashboard = () => {
                   <Button 
                     variant="soft" 
                     onClick={() => navigate("/my-reservations")}
-                    className="h-20 bg-gradient-to-r from-purple-50 to-purple-100 hover:from-purple-100 hover:to-purple-200 border border-purple-200 text-purple-700 hover:text-purple-800 transition-all duration-200"
+                    className="h-20 bg-gradient-to-r from-purple-50 to-purple-100 dark:from-purple-900 dark:to-purple-950 hover:from-purple-100 hover:to-purple-200 dark:hover:from-purple-800 dark:hover:to-purple-900 border border-purple-200 dark:border-purple-800 text-purple-700 dark:text-purple-200 hover:text-purple-800 dark:hover:text-purple-100 transition-all duration-200"
                   >
                     <div className="flex flex-col items-center gap-2">
                       <span className="text-2xl">⏰</span>
                       <div className="text-center">
                         <Text className="font-medium">My Reservations</Text>
-                        <Text className="text-xs text-purple-600">View my reservations</Text>
+                        <Text className="text-xs text-purple-600 dark:text-purple-200">View my reservations</Text>
                       </div>
                     </div>
                   </Button>
@@ -338,13 +342,13 @@ const Dashboard = () => {
                   <Button 
                     variant="soft" 
                     onClick={() => navigate("/reservations")}
-                    className="h-20 bg-gradient-to-r from-cyan-50 to-cyan-100 hover:from-cyan-100 hover:to-cyan-200 border border-cyan-200 text-cyan-700 hover:text-cyan-800 transition-all duration-200"
+                    className="h-20 bg-gradient-to-r from-cyan-50 to-cyan-100 dark:from-cyan-900 dark:to-cyan-950 hover:from-cyan-100 hover:to-cyan-200 dark:hover:from-cyan-800 dark:hover:to-cyan-900 border border-cyan-200 dark:border-cyan-800 text-cyan-700 dark:text-cyan-200 hover:text-cyan-800 dark:hover:text-cyan-100 transition-all duration-200"
                   >
                     <div className="flex flex-col items-center gap-2">
                       <span className="text-2xl">📝</span>
                       <div className="text-center">
                         <Text className="font-medium">Make Reservation</Text>
-                        <Text className="text-xs text-cyan-600">Reserve a book</Text>
+                        <Text className="text-xs text-cyan-600 dark:text-cyan-200">Reserve a book</Text>
                       </div>
                     </div>
                   </Button>
@@ -356,8 +360,8 @@ const Dashboard = () => {
 
         {/* Alerts Section */}
         {stats && stats.overdueBooks > 0 && (
-          <Callout.Root color="red" className="border-red-200 bg-red-50">
-            <Callout.Text className="text-red-700">
+          <Callout.Root color="red" className="border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-950">
+            <Callout.Text className="text-red-700 dark:text-red-200">
               <div className="flex items-center justify-between">
                 <div>
                   <strong>Attention:</strong> You have {stats.overdueBooks} overdue book(s) that need attention.
@@ -376,8 +380,8 @@ const Dashboard = () => {
         )}
 
         {stats && stats.availableBooks === 0 && (
-          <Callout.Root color="yellow" className="border-yellow-200 bg-yellow-50">
-            <Callout.Text className="text-yellow-700">
+          <Callout.Root color="yellow" className="border-yellow-200 dark:border-yellow-800 bg-yellow-50 dark:bg-yellow-950">
+            <Callout.Text className="text-yellow-700 dark:text-yellow-200">
               <strong>Notice:</strong> No books are currently available for loan. 
               Consider adding more books to your catalog.
             </Callout.Text>

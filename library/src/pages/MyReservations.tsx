@@ -74,7 +74,7 @@ const MyReservations = () => {
       <MainLayout>
         <Flex justify="center" align="center" className="h-64">
           <Spinner size="3" />
-          <Text ml="2">Loading your reservations...</Text>
+          <Text ml="2" className="text-gray-600 dark:text-gray-300">Loading your reservations...</Text>
         </Flex>
       </MainLayout>
     );
@@ -83,8 +83,8 @@ const MyReservations = () => {
   if (error) {
     return (
       <MainLayout>
-        <Callout.Root color="red">
-          <Callout.Text>Error: {error}</Callout.Text>
+        <Callout.Root color="red" className="border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-950">
+          <Callout.Text className="text-red-700 dark:text-red-200">Error: {error}</Callout.Text>
         </Callout.Root>
       </MainLayout>
     );
@@ -93,23 +93,23 @@ const MyReservations = () => {
   return (
     <MainLayout>
       <Flex direction="column" gap="4">
-        <Heading>My Reservations</Heading>
+        <Heading className="text-gray-900 dark:text-gray-100">My Reservations</Heading>
 
         {reservations.length > 0 ? (
-          <Table.Root variant="surface">
+          <Table.Root variant="surface" className="bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100">
             <Table.Header>
               <Table.Row>
-                <Table.ColumnHeaderCell>Book Title</Table.ColumnHeaderCell>
-                <Table.ColumnHeaderCell>Author</Table.ColumnHeaderCell>
-                <Table.ColumnHeaderCell>Reservation Date</Table.ColumnHeaderCell>
-                <Table.ColumnHeaderCell>Status</Table.ColumnHeaderCell>
-                <Table.ColumnHeaderCell>Actions</Table.ColumnHeaderCell>
+                <Table.ColumnHeaderCell className="bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100">Book Title</Table.ColumnHeaderCell>
+                <Table.ColumnHeaderCell className="bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100">Author</Table.ColumnHeaderCell>
+                <Table.ColumnHeaderCell className="bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100">Reservation Date</Table.ColumnHeaderCell>
+                <Table.ColumnHeaderCell className="bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100">Status</Table.ColumnHeaderCell>
+                <Table.ColumnHeaderCell className="bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100">Actions</Table.ColumnHeaderCell>
               </Table.Row>
             </Table.Header>
 
             <Table.Body>
               {reservations.map((reservation) => (
-                <Table.Row key={reservation.name}>
+                <Table.Row key={reservation.name} className="hover:bg-gray-50 dark:hover:bg-gray-800">
                   <Table.Cell>{reservation.book_title}</Table.Cell>
                   <Table.Cell>{reservation.book_author}</Table.Cell>
                   <Table.Cell>{reservation.reservation_date}</Table.Cell>
@@ -141,8 +141,16 @@ const MyReservations = () => {
             </Table.Body>
           </Table.Root>
         ) : (
-          <Box>
-            <Text>You don't have any reservations yet.</Text>
+          <Box className="p-12 bg-white dark:bg-gray-900 border-0 shadow-lg dark:shadow-xl text-center rounded-lg">
+            <div className="space-y-4">
+              <div className="text-6xl">⏰</div>
+              <Heading size="4" className="text-gray-900 dark:text-gray-100">
+                You don't have any reservations yet.
+              </Heading>
+              <Text className="text-gray-600 dark:text-gray-300">
+                Reserve a book to get started!
+              </Text>
+            </div>
           </Box>
         )}
       </Flex>

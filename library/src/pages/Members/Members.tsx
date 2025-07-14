@@ -81,7 +81,7 @@ const Members = () => {
     return (
       <MainLayout>
         <Flex justify="center" align="center" className="h-full">
-          <Spinner size="3" /> <Text ml="2">Loading members...</Text>
+          <Spinner size="3" /> <Text ml="2" className="text-gray-600 dark:text-gray-300">Loading members...</Text>
         </Flex>
       </MainLayout>
     );
@@ -90,10 +90,9 @@ const Members = () => {
   if (combinedError && !apiResponse) {
     return (
       <MainLayout>
-        <Callout.Root color="red">
-          <Callout.Text>
-            Error loading members:{" "}
-            {combinedError.message || JSON.stringify(combinedError)}
+        <Callout.Root color="red" className="border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-950">
+          <Callout.Text className="text-red-700 dark:text-red-200">
+            Error loading members: {combinedError.message || JSON.stringify(combinedError)}
           </Callout.Text>
         </Callout.Root>
       </MainLayout>
@@ -104,40 +103,42 @@ const Members = () => {
     <MainLayout>
       <Flex direction="column" gap="4">
         <Flex justify="between" align="center">
-          <Heading>Member List</Heading>
-          <Button onClick={() => navigate("/members/new")}>New Member</Button>
+          <Heading className="text-gray-900 dark:text-gray-100">Member List</Heading>
+          <Button onClick={() => navigate("/members/new")}
+            className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-medium px-6 py-3 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl dark:shadow-xl"
+          >New Member</Button>
         </Flex>
 
         {isDeleting && (
-          <Callout.Root color="yellow">
-            <Callout.Text>
+          <Callout.Root color="yellow" className="border-yellow-200 dark:border-yellow-800 bg-yellow-50 dark:bg-yellow-950">
+            <Callout.Text className="text-yellow-700 dark:text-yellow-200">
               <Spinner size="1" /> Deleting member...
             </Callout.Text>
           </Callout.Root>
         )}
         {combinedError && (
-          <Callout.Root color="red" mt="2">
-            <Callout.Text>
+          <Callout.Root color="red" mt="2" className="border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-950">
+            <Callout.Text className="text-red-700 dark:text-red-200">
               Error: {combinedError.message || JSON.stringify(combinedError)}
             </Callout.Text>
           </Callout.Root>
         )}
 
         {members.length > 0 ? (
-          <Table.Root variant="surface">
+          <Table.Root variant="surface" className="bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100">
             <Table.Header>
               <Table.Row>
-                <Table.ColumnHeaderCell>Name</Table.ColumnHeaderCell>
-                <Table.ColumnHeaderCell>Membership ID</Table.ColumnHeaderCell>
-                <Table.ColumnHeaderCell>Email</Table.ColumnHeaderCell>
-                <Table.ColumnHeaderCell>Phone</Table.ColumnHeaderCell>
-                <Table.ColumnHeaderCell>Actions</Table.ColumnHeaderCell>
+                <Table.ColumnHeaderCell className="bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100">Name</Table.ColumnHeaderCell>
+                <Table.ColumnHeaderCell className="bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100">Membership ID</Table.ColumnHeaderCell>
+                <Table.ColumnHeaderCell className="bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100">Email</Table.ColumnHeaderCell>
+                <Table.ColumnHeaderCell className="bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100">Phone</Table.ColumnHeaderCell>
+                <Table.ColumnHeaderCell className="bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100">Actions</Table.ColumnHeaderCell>
               </Table.Row>
             </Table.Header>
 
             <Table.Body>
               {members.map((member) => (
-                <Table.Row key={member.name}>
+                <Table.Row key={member.name} className="hover:bg-gray-50 dark:hover:bg-gray-800">
                   <Table.Cell>{member.member_name}</Table.Cell>
                   <Table.Cell>{member.membership_id}</Table.Cell>
                   <Table.Cell>{member.email}</Table.Cell>
@@ -164,12 +165,11 @@ const Members = () => {
                           </IconButton>
                         </AlertDialog.Trigger>
                         <AlertDialog.Content>
-                          <AlertDialog.Title>
+                          <AlertDialog.Title className="text-gray-900 dark:text-gray-100">
                             Confirm Deletion
                           </AlertDialog.Title>
-                          <AlertDialog.Description size="2">
-                            Are you sure you want to delete member "
-                            {member.member_name}"?
+                          <AlertDialog.Description size="2" className="text-gray-700 dark:text-gray-300">
+                            Are you sure you want to delete member "{member.member_name}"?
                           </AlertDialog.Description>
 
                           <Flex gap="3" mt="4" justify="end">
@@ -204,8 +204,22 @@ const Members = () => {
             </Table.Body>
           </Table.Root>
         ) : (
-          <Box>
-            <Text>No members found. Click "New Member" to add one.</Text>
+          <Box className="p-12 bg-white dark:bg-gray-900 border-0 shadow-lg dark:shadow-xl text-center rounded-lg">
+            <div className="space-y-4">
+              <div className="text-6xl">👥</div>
+              <Heading size="4" className="text-gray-900 dark:text-gray-100">
+                No members found
+              </Heading>
+              <Text className="text-gray-600 dark:text-gray-300">
+                Get started by adding some members to your library
+              </Text>
+              <Button 
+                onClick={() => navigate("/members/new")}
+                className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-medium px-6 py-3 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl dark:shadow-xl"
+              >
+                Add Your First Member
+              </Button>
+            </div>
           </Box>
         )}
       </Flex>

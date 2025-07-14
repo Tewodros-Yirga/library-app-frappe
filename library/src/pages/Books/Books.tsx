@@ -149,7 +149,7 @@ const Books = () => {
         <div className="flex justify-center items-center h-64">
           <div className="text-center">
             <Spinner size="3" />
-            <Text className="mt-4 text-gray-600">Loading books...</Text>
+            <Text className="mt-4 text-gray-600 dark:text-gray-300">Loading books...</Text>
           </div>
         </div>
       </MainLayout>
@@ -159,8 +159,8 @@ const Books = () => {
   if (combinedError && !apiResponse) {
     return (
       <MainLayout>
-        <Callout.Root color="red" className="border-red-200 bg-red-50">
-          <Callout.Text className="text-red-700">
+        <Callout.Root color="red" className="border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-950">
+          <Callout.Text className="text-red-700 dark:text-red-200">
             Error loading books: {combinedError.message || JSON.stringify(combinedError)}
           </Callout.Text>
         </Callout.Root>
@@ -174,15 +174,15 @@ const Books = () => {
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
-            <Heading size="7" className="text-gray-900">Book Catalog</Heading>
-            <Text className="text-gray-600 mt-1">
+            <Heading size="7" className="text-gray-900 dark:text-gray-100">Book Catalog</Heading>
+            <Text className="text-gray-600 dark:text-gray-300 mt-1">
               Browse and manage your library's book collection
             </Text>
           </div>
           {isLibrarian && (
             <Button 
               onClick={() => navigate("/books/new")}
-              className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-medium px-6 py-3 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl"
+              className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-medium px-6 py-3 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl dark:shadow-xl"
             >
               <span className="mr-2">📚</span>
               Add New Book
@@ -191,10 +191,10 @@ const Books = () => {
         </div>
 
         {/* Search and Filter */}
-        <Card className="p-6 bg-white border-0 shadow-lg">
+        <Card className="p-6 bg-white dark:bg-gray-900 border-0 shadow-lg dark:shadow-xl">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <Text className="text-sm font-medium text-gray-700 mb-2 block">Search Books</Text>
+              <Text className="text-sm font-medium text-gray-700 dark:text-gray-200 mb-2 block">Search Books</Text>
               <TextField.Root
                 placeholder="Search by title, author, or ISBN..."
                 value={searchTerm}
@@ -207,11 +207,11 @@ const Books = () => {
               </TextField.Root>
             </div>
             <div>
-              <Text className="text-sm font-medium text-gray-700 mb-2 block">Filter by Status</Text>
+              <Text className="text-sm font-medium text-gray-700 dark:text-gray-200 mb-2 block">Filter by Status</Text>
               <select
                 value={filterStatus}
                 onChange={(e) => setFilterStatus(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100"
               >
                 <option value="all">All Status</option>
                 <option value="Available">Available</option>
@@ -224,16 +224,16 @@ const Books = () => {
 
         {/* Status Messages */}
         {isDeleting && (
-          <Callout.Root color="yellow" className="border-yellow-200 bg-yellow-50">
-            <Callout.Text className="text-yellow-700">
+          <Callout.Root color="yellow" className="border-yellow-200 dark:border-yellow-800 bg-yellow-50 dark:bg-yellow-950">
+            <Callout.Text className="text-yellow-700 dark:text-yellow-200">
               <Spinner size="1" /> Deleting book...
             </Callout.Text>
           </Callout.Root>
         )}
         
         {combinedError && (
-          <Callout.Root color="red" className="border-red-200 bg-red-50">
-            <Callout.Text className="text-red-700">
+          <Callout.Root color="red" className="border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-950">
+            <Callout.Text className="text-red-700 dark:text-red-200">
               Error: {combinedError.message || JSON.stringify(combinedError)}
             </Callout.Text>
           </Callout.Root>
@@ -241,11 +241,11 @@ const Books = () => {
 
         {/* Results Summary */}
         <div className="flex items-center justify-between">
-          <Text className="text-gray-600">
+          <Text className="text-gray-600 dark:text-gray-300">
             Showing {filteredBooks.length} of {books.length} books
           </Text>
           {searchTerm && (
-            <Text className="text-sm text-gray-500">
+            <Text className="text-sm text-gray-500 dark:text-gray-400">
               Search results for: "{searchTerm}"
             </Text>
           )}
@@ -255,15 +255,15 @@ const Books = () => {
         {filteredBooks.length > 0 ? (
           <Grid columns={{ initial: "1", sm: "2", lg: "3" }} gap="4">
             {filteredBooks.map((book: BookData) => (
-              <Card key={book.name} className="p-6 bg-white border-0 shadow-lg hover:shadow-xl transition-shadow">
+              <Card key={book.name} className="p-6 bg-white dark:bg-gray-900 border-0 shadow-lg dark:shadow-xl hover:shadow-xl dark:hover:shadow-2xl transition-shadow">
                 <div className="space-y-4">
                   {/* Book Header */}
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
-                      <Heading size="4" className="text-gray-900 line-clamp-2">
+                      <Heading size="4" className="text-gray-900 dark:text-gray-100 line-clamp-2">
                         {book.title}
                       </Heading>
-                      <Text className="text-gray-600 mt-1">by {book.author}</Text>
+                      <Text className="text-gray-600 dark:text-gray-300 mt-1">by {book.author}</Text>
                     </div>
                     <Badge 
                       variant="soft" 
@@ -277,18 +277,18 @@ const Books = () => {
 
                   {/* Book Details */}
                   <div className="space-y-2">
-                    <div className="flex items-center text-sm text-gray-600">
+                    <div className="flex items-center text-sm text-gray-600 dark:text-gray-300">
                       <span className="font-medium w-20">ISBN:</span>
                       <span className="font-mono">{book.isbn}</span>
                     </div>
-                    <div className="flex items-center text-sm text-gray-600">
+                    <div className="flex items-center text-sm text-gray-600 dark:text-gray-300">
                       <span className="font-medium w-20">Published:</span>
                       <span>{book.publish_date}</span>
                     </div>
                   </div>
 
                   {/* Actions */}
-                  <div className="flex items-center gap-2 pt-2 border-t border-gray-100">
+                  <div className="flex items-center gap-2 pt-2 border-t border-gray-100 dark:border-gray-800">
                     {isLibrarian && (
                       <>
                         <IconButton
@@ -355,13 +355,13 @@ const Books = () => {
             ))}
           </Grid>
         ) : (
-          <Card className="p-12 bg-white border-0 shadow-lg text-center">
+          <Card className="p-12 bg-white dark:bg-gray-900 border-0 shadow-lg dark:shadow-xl text-center">
             <div className="space-y-4">
               <div className="text-6xl">📚</div>
-              <Heading size="4" className="text-gray-900">
+              <Heading size="4" className="text-gray-900 dark:text-gray-100">
                 {searchTerm ? "No books found" : "No books available"}
               </Heading>
-              <Text className="text-gray-600">
+              <Text className="text-gray-600 dark:text-gray-300">
                 {searchTerm 
                   ? `No books match your search for "${searchTerm}"`
                   : "Get started by adding some books to your library"
@@ -370,7 +370,7 @@ const Books = () => {
               {isLibrarian && !searchTerm && (
                 <Button 
                   onClick={() => navigate("/books/new")}
-                  className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-medium px-6 py-3 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl"
+                  className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-medium px-6 py-3 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl dark:shadow-xl"
                 >
                   Add Your First Book
                 </Button>
