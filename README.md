@@ -60,7 +60,6 @@ project-root/
     └── src/
         ├── components/     # Reusable UI components
         ├── pages/          # Core pages: Books, Members, Loans
-        ├── services/       # API interaction via frappe-react-sdk
         └── App.tsx         # Root layout and routing
 
 # Project Setup Guide
