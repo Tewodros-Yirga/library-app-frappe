@@ -49,7 +49,7 @@ A full-stack **Library Management System** developed using [Frappe Framework 15]
 
 ## 🧱 Architecture Overview
 
-
+```
 project-root/
 ├── ├── library_app/
 │   │   ├── api.py          # All RESTful API logic
