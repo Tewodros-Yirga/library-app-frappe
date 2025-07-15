@@ -40,7 +40,7 @@ interface GetBooksResponse {
 
 export default function Books() {
   const navigate = useNavigate();
-  const { isLibrarian, isAdmin } = useUserRoles();
+  const { isLibrarian, isAdmin, isMember } = useUserRoles();
   const [books, setBooks] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -129,6 +129,17 @@ export default function Books() {
                 <Table.Cell>
                   <Flex gap="2">
                     <Button size="1" variant="soft" onClick={() => navigate(`/books/${book.name}`)} aria-label="View book">View</Button>
+                    {isMember && book.status !== "Available" && (
+                      <Button 
+                        size="1" 
+                        variant="soft" 
+                        color="orange" 
+                        onClick={() => navigate(`/reservations/new?book=${book.name}`)} 
+                        aria-label="Reserve book"
+                      >
+                        Reserve
+                      </Button>
+                    )}
                     {(isLibrarian || isAdmin) && (
                       <>
                         <Button size="1" variant="soft" color="blue" onClick={() => navigate(`/books/${book.name}/edit`)} aria-label="Edit book">Edit</Button>
@@ -171,7 +182,7 @@ export default function Books() {
           </Flex>
         </Dialog.Content>
       </Dialog.Root>
-    </Card>
+          </Card>
     </MainLayout>
   );
 }

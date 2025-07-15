@@ -481,6 +481,8 @@ api_methods = {
     "library_app.api.get_member": "GET",
     "library_app.api.update_member": "PUT",
     "library_app.api.delete_member": "DELETE",
+    "library_app.api.get_member_by_user": "GET",
+    "library_app.api.create_member_for_user": "POST",
 
     # Loan Management
     "library_app.api.create_loan": "POST",
@@ -499,6 +501,13 @@ api_methods = {
     "library_app.api.reset_user_password": "POST",
     "library_app.api.get_loan_details": "GET",
     "library_app.api.get_reservation_details": "GET",
+    
+    #Reservation Management API
+    "library_app.api.create_reservation": "POST",
+    "library_app.api.get_reservations": "GET",
+    "library_app.api.cancel_reservation": "POST",
+
+
 
 }
 

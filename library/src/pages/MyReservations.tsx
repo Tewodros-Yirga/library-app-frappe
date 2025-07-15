@@ -72,7 +72,7 @@ const MyReservations = () => {
   if (loading) {
     return (
       <MainLayout>
-        <Flex justify="center" align="center" className="h-64">
+        <Flex justify="center" align="center" className="h-64 mt-20">
           <Spinner size="3" />
           <Text ml="2" className="text-gray-600 dark:text-gray-300">Loading your reservations...</Text>
         </Flex>
@@ -83,7 +83,7 @@ const MyReservations = () => {
   if (error) {
     return (
       <MainLayout>
-        <Callout.Root color="red" className="border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-950">
+        <Callout.Root color="red" className="mt-20 border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-950">
           <Callout.Text className="text-red-700 dark:text-red-200">Error: {error}</Callout.Text>
         </Callout.Root>
       </MainLayout>
@@ -92,7 +92,7 @@ const MyReservations = () => {
 
   return (
     <MainLayout>
-      <Flex direction="column" gap="4">
+      <Flex direction="column" gap="4" className="mt-20">
         <Heading className="text-gray-900 dark:text-gray-100">My Reservations</Heading>
 
         {reservations.length > 0 ? (

@@ -146,6 +146,31 @@ def get_member(name):
         frappe.throw(f"Failed to retrieve member: {e}")
 
 @frappe.whitelist()
+def get_member_by_user(user):
+    """Get member information for a specific user."""
+    try:
+        print(f"Looking for member with user: {user}")  # Debug log
+        
+        member = frappe.get_list(
+            "Member",
+            filters={"user": user},
+            fields=["name", "member_name", "membership_id", "email", "phone"],
+            limit=1
+        )
+        
+        print(f"Found member: {member}")  # Debug log
+        
+        if member:
+            return member[0]
+        else:
+            frappe.throw(f"No member found for user '{user}'")
+            
+    except Exception as e:
+        frappe.log_error(frappe.get_traceback(), "Error in get_member_by_user API")
+        frappe.throw(f"Failed to get member information: {e}")
+
+
+@frappe.whitelist()
 def update_member(name, member_name=None, membership_id=None, email=None, phone=None, frappe_user=None):
     """Updates an existing library member record."""
     try:
@@ -179,6 +204,43 @@ def update_member(name, member_name=None, membership_id=None, email=None, phone=
     except Exception as e:
         frappe.log_error(frappe.gettraceback(), "Error in update_member API")
         frappe.throw(f"Failed to update member: {e}")
+
+
+@frappe.whitelist()
+def create_member_for_user(user):
+    """Create a member record for a user if it doesn't exist."""
+    try:
+        # Check if member already exists for this user
+        existing_member = frappe.get_list(
+            "Member",
+            filters={"user": user},
+            limit=1
+        )
+        
+        if existing_member:
+            return {"message": "Member already exists for this user"}
+        
+        # Get user information
+        user_doc = frappe.get_doc("User", user)
+        
+        # Create new member
+        member = frappe.get_doc({
+            "doctype": "Member",
+            "member_name": user_doc.full_name or user_doc.name,
+            "membership_id": f"MBR-{user_doc.name.upper()}",
+            "email": user_doc.email,
+            "phone": "",  # You can add phone field if needed
+            "user": user
+        })
+        member.insert()
+        
+        frappe.db.commit()
+        return {"message": "Member created successfully", "member_name": member.name}
+        
+    except Exception as e:
+        frappe.log_error(frappe.get_traceback(), "Error creating member for user")
+        frappe.throw(f"Failed to create member: {e}")
+
 
 @frappe.whitelist()
 def delete_member(name):
@@ -550,15 +612,38 @@ def create_reservation(book_name, member_name):
 
 @frappe.whitelist()
 def get_reservations():
-    """Fetches all reservations."""
+    """Fetches all reservations with book and member details."""
     try:
+        print("get_reservations API called")  # Debug log
+        
         reservations = frappe.get_list(
             "Reservation", 
-            fields=["name", "book", "member", "reservation_date", "status"],
-            order_by="reservation_date asc"
+            fields=["name", "book", "member", "reserve_date", "status"],
+            order_by="reserve_date asc"
         )
-        return reservations or []
+        
+        print(f"Found {len(reservations)} reservations")  # Debug log
+        
+        # Add book_title and member_name for display
+        for reservation in reservations:
+            try:
+                # Get book title
+                book_doc = frappe.get_doc("Book", reservation.book)
+                reservation["book_title"] = book_doc.title
+                
+                # Get member name
+                member_doc = frappe.get_doc("Member", reservation.member)
+                reservation["member_name"] = member_doc.member_name
+            except Exception as e:
+                print(f"Error processing reservation {reservation.name}: {e}")
+                reservation["book_title"] = "Unknown Book"
+                reservation["member_name"] = "Unknown Member"
+        
+        result = reservations or []
+        print(f"Returning result: {result}")  # Debug log
+        return result
     except Exception as e:
+        print(f"Error in get_reservations: {e}")  # Debug log
         frappe.log_error(frappe.get_traceback(), "API Error: get_reservations")
         return []
 
@@ -796,65 +881,82 @@ def return_book_with_permission(loan_name):
 
 @frappe.whitelist()
 def get_my_loans():
-    """Gets loans for the current user (member)."""
-    check_member_permission()
-    
-    # Get the member record for the current user
-    member = frappe.get_value("Member", {"frappe_user": frappe.session.user})
-    if not member:
-        frappe.throw("Member record not found for current user.")
-    
-    # Get loans for this member
+    """Return loans for the currently logged-in user (member)."""
+    user = frappe.session.user
+    print(f"Current session user: {user}")
+    member_list = frappe.get_list(
+        "Member",
+        filters={"user": user},
+        fields=["name"]
+    )
+    print(f"Found member_list: {member_list}")
+    if not member_list:
+        return []
+    member_name = member_list[0].name
+
     loans = frappe.get_list(
         "Loan",
-        filters={"member": member},
+        filters={"member": member_name},
         fields=["name", "book", "loan_date", "return_date", "returned", "overdue"],
         order_by="loan_date desc"
     )
-    
-    # Add book details
-    detailed_loans = []
+    print(f"Found loans: {loans}")
+
     for loan in loans:
-        book_title = frappe.db.get_value("Book", loan.book, "title")
-        book_author = frappe.db.get_value("Book", loan.book, "author")
-        detailed_loans.append({
-            **loan,
-            "book_title": book_title,
-            "book_author": book_author
-        })
-    
-    return detailed_loans
+        try:
+            book_doc = frappe.get_doc("Book", loan.book)
+            loan["book_title"] = book_doc.title
+            loan["book_author"] = book_doc.author
+        except Exception:
+            loan["book_title"] = "Unknown"
+            loan["book_author"] = "Unknown"
+
+    print(f"Returning loans: {loans}")
+    return loans or [] 
+
+
 
 @frappe.whitelist()
 def get_my_reservations():
-    """Gets reservations for the current user (member)."""
-    check_member_permission()
-    
-    # Get the member record for the current user
-    member = frappe.get_value("Member", {"frappe_user": frappe.session.user})
-    if not member:
-        frappe.throw("Member record not found for current user.")
-    
-    # Get reservations for this member
-    reservations = frappe.get_list(
-        "Reservation",
-        filters={"member": member},
-        fields=["name", "book", "reservation_date", "status"],
-        order_by="reservation_date desc"
-    )
-    
-    # Add book details
-    detailed_reservations = []
-    for reservation in reservations:
-        book_title = frappe.db.get_value("Book", reservation.book, "title")
-        book_author = frappe.db.get_value("Book", reservation.book, "author")
-        detailed_reservations.append({
-            **reservation,
-            "book_title": book_title,
-            "book_author": book_author
-        })
-    
-    return detailed_reservations
+    """Return reservations for the currently logged-in user (member)."""
+    try:
+        user = frappe.session.user
+        print(f"Current session user: {user}")
+        member_list = frappe.get_list(
+            "Member",
+            filters={"user": user},
+            fields=["name"]
+        )
+        print(f"Found member_list: {member_list}")
+        if not member_list:
+            return {"message": []}
+        member_name = member_list[0].name
+
+        reservations = frappe.get_list(
+            "Reservation",
+            filters={"member": member_name},
+            fields=["name", "book", "reserve_date", "status"],
+            order_by="reserve_date desc"
+        )
+        print(f"Found reservations: {reservations}")
+
+        for reservation in reservations:
+            try:
+                book_doc = frappe.get_doc("Book", reservation.book)
+                reservation["book_title"] = book_doc.title
+                reservation["book_author"] = book_doc.author
+            except Exception as e:
+                print(f"Error processing reservation {reservation.name}: {e}")
+                reservation["book_title"] = "Unknown"
+                reservation["book_author"] = "Unknown"
+
+        print(f"Returning reservations: {reservations}")
+        return reservations or []
+    except Exception as e:
+        print(f"Error in get_my_reservations: {e}")
+        frappe.log_error(frappe.get_traceback(), "API Error: get_my_reservations")
+        return []
+
 
 @frappe.whitelist()
 def get_current_user_roles():

@@ -67,12 +67,12 @@ export default function MemberDashboard() {
       } else if (response?.csv_content) {
         // Download CSV from content
         const blob = new Blob([response.csv_content], { type: "text/csv" });
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = "loan_history.csv";
-        a.click();
-        window.URL.revokeObjectURL(url);
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "loan_history.csv";
+    a.click();
+    window.URL.revokeObjectURL(url);
       } else {
         alert("Export failed: No CSV data returned.");
       }
@@ -146,17 +146,17 @@ export default function MemberDashboard() {
             <Card className="flex flex-col gap-2 p-6">
               <Heading size="4">Browse Books</Heading>
               <Text>See all available books in the library.</Text>
-              <Button onClick={() => navigate("/books")}>Browse Books</Button>
+        <Button onClick={() => navigate("/books")}>Browse Books</Button>
             </Card>
             <Card className="flex flex-col gap-2 p-6">
               <Heading size="4">My Loans</Heading>
               <Text>View your current and past loans.</Text>
-              <Button onClick={() => navigate("/my-loans")}>My Loans</Button>
+        <Button onClick={() => navigate("/my-loans")}>My Loans</Button>
             </Card>
             <Card className="flex flex-col gap-2 p-6">
               <Heading size="4">My Reservations</Heading>
               <Text>View and manage your book reservations.</Text>
-              <Button onClick={() => navigate("/my-reservations")}>My Reservations</Button>
+        <Button onClick={() => navigate("/my-reservations")}>My Reservations</Button>
             </Card>
             <Card className="flex flex-col gap-2 p-6">
               <Heading size="4">Make a Reservation</Heading>
@@ -169,7 +169,7 @@ export default function MemberDashboard() {
               <Button onClick={handleExportLoanHistory} disabled={exporting}>
                 {exporting ? <Spinner size="1" /> : "Export Loan History"}
               </Button>
-            </Card>
+      </Card>
           </Grid>
         </section>
 

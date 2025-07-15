@@ -73,7 +73,7 @@ const MyLoans = () => {
 
   return (
     <MainLayout>
-      <Flex direction="column" gap="4">
+      <Flex direction="column" gap="4" className="mt-20">
         <Heading className="text-gray-900 dark:text-gray-100">My Loans</Heading>
 
         {loans.length > 0 ? (

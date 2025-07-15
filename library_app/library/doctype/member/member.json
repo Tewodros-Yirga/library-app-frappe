@@ -8,7 +8,8 @@
   "member_name",
   "membership_id",
   "email",
-  "phone"
+  "phone",
+  "user"
  ],
  "fields": [
   {
@@ -44,12 +45,19 @@
    "in_list_view": 1,
    "label": "Phone",
    "reqd": 1
+  },
+  {
+   "description": "Link to frappe user Account",
+   "fieldname": "user",
+   "fieldtype": "Link",
+   "label": "User",
+   "options": "User"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-07-14 13:02:23.749907",
+ "modified": "2025-07-15 02:54:19.806134",
  "modified_by": "Administrator",
  "module": "Library",
  "name": "Member",

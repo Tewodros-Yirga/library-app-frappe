@@ -224,7 +224,7 @@ export default function AdminDashboard() {
               <Text>System configuration and advanced settings (coming soon).</Text>
             </Flex>
             {/* Add real settings here in the future */}
-          </Card>
+      </Card>
         </section>
       </div>
     </MainLayout>
