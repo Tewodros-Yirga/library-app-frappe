@@ -1,5 +1,6 @@
 # library_app/library_app/api.py
 import frappe
+from frappe.utils import nowdate
 
 # --- Book Management API (CRUD) ---
 
@@ -683,30 +684,46 @@ def cancel_reservation(reservation_name):
 
 # --- Email Notification Functions ---
 
-def send_overdue_notification(member_email, member_name, book_title, return_date):
-    """Sends overdue notification email to member."""
-    try:
-        subject = f"Book Overdue: {book_title}"
-        message = f"""
-        Dear {member_name},
-        
-        The book "{book_title}" was due for return on {return_date} and is now overdue.
-        Please return the book as soon as possible to avoid any penalties.
-        
-        Thank you,
-        Library Management System
-        """
-        
-        frappe.sendmail(
-            recipients=[member_email],
-            subject=subject,
-            message=message,
-            now=True
-        )
-        return True
-    except Exception as e:
-        frappe.log_error(f"Failed to send overdue notification: {e}")
-        return False
+
+
+def send_overdue_notifications():
+    """Send email notifications to members with overdue loans."""
+    # Find all loans that are overdue and not yet returned
+    overdue_loans = frappe.get_all(
+        "Loan",
+        filters={
+            "overdue": 1,
+            "returned": 0
+        },
+        fields=["name", "book", "member", "loan_date", "return_date"]
+    )
+
+    for loan in overdue_loans:
+        try:
+            member = frappe.get_doc("Member", loan["member"])
+            book = frappe.get_doc("Book", loan["book"])
+            # Compose email
+            subject = f"Overdue Notice: {book.title}"
+            message = f"""
+Dear {member.member_name},
+
+This is a reminder that your loan for the book '{book.title}' was due on {loan['return_date']} and is now overdue.
+
+Please return the book as soon as possible to avoid penalties.
+
+Thank you,
+Library Team
+"""
+            # Send email
+            frappe.sendmail(
+                recipients=[member.email],
+                subject=subject,
+                message=message
+            )
+            # Optionally, log that notification was sent (custom DocType or Notification Log)
+            print(f"Sent overdue notice to {member.email} for loan {loan['name']}")
+        except Exception as e:
+            frappe.log_error(frappe.get_traceback(), "Error sending overdue notification")
 
 def send_reservation_notification(member_name, book_title):
     """Sends notification when a reserved book becomes available."""
@@ -760,7 +777,7 @@ def check_and_notify_overdue_books():
         member_name = frappe.db.get_value("Member", loan.member, "member_name")
         member_email = frappe.db.get_value("Member", loan.member, "email")
         
-        if send_overdue_notification(member_email, member_name, book_title, loan.return_date):
+        if send_overdue_notifications():
             notifications_sent += 1
     
     frappe.db.commit()
@@ -1037,3 +1054,20 @@ def get_reservation_details(reservation_name):
     }
 
 
+def update_overdue_loans():
+    """Mark loans as overdue if past return date and not returned."""
+    today = nowdate()
+    loans = frappe.get_all(
+        "Loan",
+        filters={
+            "returned": 0,
+            "overdue": 0
+        },
+        fields=["name", "return_date"]
+    )
+    for loan in loans:
+        if loan["return_date"] and loan["return_date"] < today:
+            loan_doc = frappe.get_doc("Loan", loan["name"])
+            loan_doc.overdue = 1
+            loan_doc.save()
+    frappe.db.commit()
