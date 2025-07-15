@@ -11,6 +11,8 @@ import {
 } from "react-router-dom";
 import type { JSX } from 'react';
 import { Toaster } from 'sonner';
+import BooksOnLoanReport from "./pages/Reports/BooksOnLoanReport";
+import OverdueBooksReport from "./pages/Reports/OverdueBooksReport";
 
 
 // Import pages
@@ -217,6 +219,26 @@ function ThemeConsumerApp({ getSiteName }: { getSiteName: () => string }) {
                     <LoanForm />
                   </RoleBasedRoute>
                 </PrivateRoute>
+              }
+            />
+            <Route
+              path="/reports/loans"
+              element={
+                <PrivateRoute>
+                  <RoleBasedRoute>
+                    <BooksOnLoanReport />
+                  </RoleBasedRoute>
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/reports/overdue"
+              element={
+                <PrivateRoute>
+                  <RoleBasedRoute>
+                    <OverdueBooksReport />
+                  </RoleBasedRoute>
+                </PrivateRoute> 
               }
             />
             <Route
