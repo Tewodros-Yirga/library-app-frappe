@@ -328,7 +328,7 @@ def return_book(loan_name):
         pending_reservations = frappe.get_list(
             "Reservation", 
             filters={"book": loan.book, "status": "Pending"},
-            order_by="reservation_date asc",
+            order_by="reserve_date asc",
             limit=1
         )
         
@@ -664,7 +664,7 @@ def cancel_reservation(reservation_name):
         pending_reservations = frappe.get_list(
             "Reservation", 
             filters={"book": reservation.book, "status": "Pending"},
-            order_by="reservation_date asc"
+            order_by="reserve_date asc"
         )
         
         if not pending_reservations:

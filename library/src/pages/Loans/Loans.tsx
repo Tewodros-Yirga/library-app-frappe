@@ -90,86 +90,86 @@ const activeLoans: LoanData[] = loans.filter(loan => !loan.returned);
   return (
     <MainLayout>
       <Card className="p-6 mt-20">
-        <Flex direction="column" gap="4">
+      <Flex direction="column" gap="4">
           <Flex justify="between" align="center" className="mb-6">
             <Heading size="6">Loans Catalog</Heading>
             <Button onClick={() => navigate("/loans/new")} aria-label="Add new loan">
               New Loan
             </Button>
-          </Flex>
+        </Flex>
 
-          {fetchError && (
+        {fetchError && (
             <Callout.Root color="red" mt="2">
               <Callout.Text>
-                Error: {fetchError.message || JSON.stringify(fetchError)}
-              </Callout.Text>
-            </Callout.Root>
-          )}
+              Error: {fetchError.message || JSON.stringify(fetchError)}
+            </Callout.Text>
+          </Callout.Root>
+        )}
 
           {activeLoans.length > 0 ? (
             <Table.Root variant="surface">
-              <Table.Header>
-                <Table.Row>
+            <Table.Header>
+              <Table.Row>
                   <Table.ColumnHeaderCell>Book</Table.ColumnHeaderCell>
                   <Table.ColumnHeaderCell>Member</Table.ColumnHeaderCell>
                   <Table.ColumnHeaderCell>Loan Date</Table.ColumnHeaderCell>
                   <Table.ColumnHeaderCell>Return Date</Table.ColumnHeaderCell>
                   <Table.ColumnHeaderCell>Status</Table.ColumnHeaderCell>
-                </Table.Row>
-              </Table.Header>
+              </Table.Row>
+            </Table.Header>
 
-              <Table.Body>
+            <Table.Body>
                 {activeLoans.map((loan) => (
                   <Table.Row key={loan.name}>
                     <Table.Cell>{loan.book_title }</Table.Cell>
                     <Table.Cell>{loan.member_name}</Table.Cell>
-                    <Table.Cell>{loan.loan_date}</Table.Cell>
-                    <Table.Cell>{loan.return_date}</Table.Cell>
-                    <Table.Cell>
-                      <Flex gap="2" align="center">
-                        {loan.returned ? (
-                          <Badge color="green">Returned</Badge>
-                        ) : loan.overdue ? (
-                          <Badge color="red">Overdue</Badge>
-                        ) : (
-                          <Badge color="blue">Active</Badge>
-                        )}
-                        {!loan.returned && (
+                  <Table.Cell>{loan.loan_date}</Table.Cell>
+                  <Table.Cell>{loan.return_date}</Table.Cell>
+                  <Table.Cell>
+                    <Flex gap="2" align="center">
+                      {loan.returned ? (
+                        <Badge color="green">Returned</Badge>
+                      ) : loan.overdue ? (
+                        <Badge color="red">Overdue</Badge>
+                      ) : (
+                        <Badge color="blue">Active</Badge>
+                      )}
+                      {!loan.returned && (
                           <Button
-                            size="1"
-                            variant="soft"
-                            color="green"
-                            onClick={() => navigate(`/loans/return/${loan.name}`)}
-                          >
-                            Mark Returned
+                          size="1"
+                          variant="soft"
+                          color="green"
+                          onClick={() => navigate(`/loans/return/${loan.name}`)}
+                        >
+                          Mark Returned
                           </Button>
-                        )}
-                      </Flex>
-                    </Table.Cell>
-                  </Table.Row>
-                ))}
-              </Table.Body>
-            </Table.Root>
-          ) : (
-            <Box className="p-12 bg-white dark:bg-gray-900 border-0 shadow-lg dark:shadow-xl text-center rounded-lg">
-              <div className="space-y-4">
-                <div className="text-6xl">📋</div>
-                <Heading size="4" className="text-gray-900 dark:text-gray-100">
-                  No loans found
-                </Heading>
-                <Text className="text-gray-600 dark:text-gray-300">
-                  Get started by creating a new loan
-                </Text>
-                <Button 
-                  onClick={() => navigate("/loans/new")}
-                  className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-medium px-6 py-3 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl dark:shadow-xl"
-                >
-                  Add Your First Loan
-                </Button>
-              </div>
-            </Box>
-          )}
-        </Flex>
+                      )}
+                    </Flex>
+                  </Table.Cell>
+                </Table.Row>
+              ))}
+            </Table.Body>
+          </Table.Root>
+        ) : (
+          <Box className="p-12 bg-white dark:bg-gray-900 border-0 shadow-lg dark:shadow-xl text-center rounded-lg">
+            <div className="space-y-4">
+              <div className="text-6xl">📋</div>
+              <Heading size="4" className="text-gray-900 dark:text-gray-100">
+                No loans found
+              </Heading>
+              <Text className="text-gray-600 dark:text-gray-300">
+                Get started by creating a new loan
+              </Text>
+              <Button 
+                onClick={() => navigate("/loans/new")}
+                className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-medium px-6 py-3 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl dark:shadow-xl"
+              >
+                Add Your First Loan
+              </Button>
+            </div>
+          </Box>
+        )}
+      </Flex>
       </Card>
     </MainLayout>
   );

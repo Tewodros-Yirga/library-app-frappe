@@ -105,7 +105,7 @@ export default function Books() {
         <Flex justify="center" align="center" className="h-32">
           <Spinner size="3" />
           <Text ml="2">Loading books...</Text>
-        </Flex>
+                            </Flex>
       ) : error ? (
         <Callout.Root color="red"><Callout.Text>{error}</Callout.Text></Callout.Root>
       ) : books.length === 0 ? (
@@ -134,9 +134,9 @@ export default function Books() {
                   <Flex gap="2">
                     <Button size="1" variant="soft" onClick={() => navigate(`/books/${book.name}`)} aria-label="View book">View</Button>
                     {isMember && book.status !== "Available" && (
-                      <Button 
+                      <Button
                         size="1" 
-                        variant="soft" 
+                        variant="soft"
                         color="orange" 
                         onClick={() => navigate(`/reservations/new?book=${book.name}`)} 
                         aria-label="Reserve book"

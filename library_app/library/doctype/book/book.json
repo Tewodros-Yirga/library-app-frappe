@@ -67,7 +67,7 @@
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-07-14 12:58:26.410677",
+ "modified": "2025-07-15 10:08:03.354505",
  "modified_by": "Administrator",
  "module": "Library",
  "name": "Book",
@@ -93,7 +93,9 @@
    "read": 1,
    "report": 1,
    "role": "Library Member",
-   "share": 1
+   "select": 1,
+   "share": 1,
+   "write": 1
   },
   {
    "create": 1,

@@ -68,7 +68,7 @@ const MainLayout = ({ children }: MainLayoutProps) => {
             </Button>
             {/* Desktop navigation */}
             <div className="hidden md:block">
-              <RoleBasedNavigation />
+            <RoleBasedNavigation />
             </div>
             {/* User Profile Section - avatar only on mobile */}
             {currentUser && (
