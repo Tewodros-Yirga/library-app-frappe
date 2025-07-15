@@ -20,6 +20,7 @@ import MainLayout from "../../components/MainLayout";
 import { Link, useNavigate } from "react-router-dom";
 import { useFrappePostCall, useFrappeDeleteDoc, useFrappeDeleteCall } from "frappe-react-sdk";
 import { Pencil1Icon, TrashIcon, BookmarkIcon, MagnifyingGlassIcon } from "@radix-ui/react-icons";
+import { toast } from 'sonner';
 import { useEffect, useState } from "react";
 import { useUserRoles } from "../../hooks/useUserRoles";
 
@@ -60,6 +61,7 @@ export default function Books() {
       setBooks(Array.isArray(response) ? response : response?.message || []);
     } catch (err: any) {
       setError(err.message || "Failed to load books");
+      toast.error(err.message || "Failed to load books");
     } finally {
       setLoading(false);
     }
@@ -73,11 +75,13 @@ export default function Books() {
   const handleDeleteBook = async (book: any) => {
     try {
       await deleteBookCall({ name: book.name });
-      setSuccessMsg(`Book "${book.title}" deleted successfully.`);
+      toast.success(`Book "${book.title}" deleted successfully.`);
+      setSuccessMsg(null);
       setDeleteDialog({ open: false });
       fetchBooks();
     } catch (err: any) {
       setError("Failed to delete book: You cannot not delete a book with status On Loan or Reserved");
+        toast.error("Failed to delete book: You cannot delete a book with status On Loan or Reserved");
       setDeleteDialog({ open: false });
     }
   };

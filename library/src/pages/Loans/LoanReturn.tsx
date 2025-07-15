@@ -3,6 +3,7 @@ import { useFrappePostCall } from "frappe-react-sdk";
 import { useEffect } from "react";
 import MainLayout from "../../components/MainLayout";
 import { Flex, Spinner, Callout, Button, Heading, Card } from "@radix-ui/themes";
+import { toast } from 'sonner';
 
 export default function LoanReturn() {
   const { loan_name } = useParams<{ loan_name: string }>();
@@ -14,6 +15,18 @@ export default function LoanReturn() {
       returnLoan({loan_name: loan_name });
     }
   }, [loan_name, returnLoan]);
+
+  useEffect(() => {
+    if (result) {
+      toast.success("Loan marked as returned!");
+    }
+  }, [result]);
+
+  useEffect(() => {
+    if (error) {
+      toast.error(error.message || "Failed to mark loan as returned");
+    }
+  }, [error]);
 
   if (loading) {
     return (

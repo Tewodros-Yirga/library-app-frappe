@@ -6,6 +6,7 @@ import {
 } from "@radix-ui/themes";
 import MainLayout from "../../components/MainLayout";
 import { useEffect, useState } from "react";
+import { toast } from 'sonner';
 
 export default function BookDetail() {
   const { name: bookName } = useParams<{ name: string }>();
@@ -24,9 +25,10 @@ export default function BookDetail() {
   const handleDelete = async () => {
     try {
       await deleteBookCall({ name: bookName });
-      setSuccessMsg("Book deleted successfully.");
+      toast.success("Book deleted successfully.");
+      navigate("/books");
     } catch (err: any) {
-      alert(err.message || "Failed to delete book");
+      toast.error(err.message || "Failed to delete book");
     }
   };
   const bookData = book?.message || book;

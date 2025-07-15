@@ -18,6 +18,7 @@ import {
   useFrappeCreateDoc,
   useFrappeUpdateDoc,
 } from "frappe-react-sdk";
+import { toast } from 'sonner';
 
 interface MemberData {
   name?: string;
@@ -77,15 +78,17 @@ const MemberForm = () => {
     try {
       if (memberName) {
         await updateDoc("Member", memberName, formData);
+        toast.success("Member updated successfully!");
         navigate("/members");
       } else {
         await createDoc("Member", formData);
+        toast.success("Member created successfully!");
         navigate("/members");
       }
     } catch (error: any) {
       console.error("Failed to save member:", error);
       const errorMessage = error.messages?.[0] || error.message || "An unknown error occurred.";
-      alert(`Error saving member: ${errorMessage}`);
+      toast.error(`Error saving member: ${errorMessage}`);
     }
   };
 

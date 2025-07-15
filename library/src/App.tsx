@@ -10,6 +10,8 @@ import {
   Navigate,
 } from "react-router-dom";
 import type { JSX } from 'react';
+import { Toaster } from 'sonner';
+
 
 // Import pages
 import Login from "./pages/auth/Login";
@@ -94,6 +96,7 @@ function App() {
   // Use theme context
   return (
     <ThemeProvider>
+       <Toaster richColors position="top-right" />
       <ThemeConsumerApp getSiteName={getSiteName} />
     </ThemeProvider>
   );

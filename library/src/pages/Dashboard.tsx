@@ -4,9 +4,17 @@ import MemberDashboard from "./MemberDashboard";
 import AdminDashboard from "./AdminDashboard";
 import MainLayout from "../components/MainLayout";
 import { Spinner, Callout, Text } from "@radix-ui/themes";
+import { toast } from 'sonner';
+import { useEffect } from "react";
 
 export default function Dashboard() {
   const { isLibrarian, isMember, isAdmin, isLoading, error } = useUserRoles();
+
+  useEffect(() => {
+    if (error) {
+      toast.error(error);
+    }
+  }, [error]);
 
   if (isLoading) {
     return (

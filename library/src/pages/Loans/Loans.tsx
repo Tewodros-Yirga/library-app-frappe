@@ -15,6 +15,7 @@ import MainLayout from "../../components/MainLayout";
 import { Link, useNavigate } from "react-router-dom";
 import { useFrappePostCall } from "frappe-react-sdk";
 import { useEffect } from "react";
+import { toast } from 'sonner';
 
 interface LoanData {
   name: string;
@@ -49,13 +50,20 @@ const activeLoans: LoanData[] = loans.filter(loan => !loan.returned);
     const fetchData = async () => {
       try {
         await fetchLoans({});
-      } catch (error) {
+      } catch (error: any) {
         console.error("Failed to fetch loans:", error);
+        toast.error(error.message || "Failed to load loans");
         // Error is already captured in fetchError
       }
     };
     fetchData();
   }, [fetchLoans]);
+
+  useEffect(() => {
+    if (fetchError) {
+      toast.error(fetchError.message || "Failed to load loans");
+    }
+  }, [fetchError]);
 
   if (isLoading && !apiResponse) {
     return (

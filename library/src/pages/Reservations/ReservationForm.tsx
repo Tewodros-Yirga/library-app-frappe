@@ -16,6 +16,7 @@ import {
 import MainLayout from "../../components/MainLayout";
 import { useFrappePostCall, useFrappeAuth } from "frappe-react-sdk";
 import { useUserRoles } from "../../hooks/useUserRoles";
+import { toast } from 'sonner';
 
 interface ReservationData {
   book: string;
@@ -147,10 +148,11 @@ const ReservationForm = () => {
         book_name: data.book,
         member_name: data.member,
       });
+      toast.success("Reservation created successfully!");
       navigate("/reservations");
     } catch (error: any) {
       console.error("Failed to create reservation:", error);
-      alert(`Error: ${error.message || "Failed to create reservation"}`);
+      toast.error(error.message || "Failed to create reservation");
     }
   };
 

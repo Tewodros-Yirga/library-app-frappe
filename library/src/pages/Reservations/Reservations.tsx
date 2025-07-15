@@ -17,6 +17,7 @@ import { useNavigate } from "react-router-dom";
 import { useFrappePostCall } from "frappe-react-sdk";
 import { TrashIcon } from "@radix-ui/react-icons";
 import { useEffect, useState } from "react";
+import { toast } from 'sonner';
 
 // Define the type for Reservation data
 interface ReservationData {
@@ -62,6 +63,12 @@ const Reservations = () => {
     console.log("Reservations state updated:", reservations);
   }, [reservations]);
 
+  useEffect(() => {
+    if (error) {
+      toast.error(error);
+    }
+  }, [error]);
+
   const fetchReservations = async () => {
     try {
       setLoading(true);
@@ -98,14 +105,14 @@ const Reservations = () => {
     try {
       setCancelling(reservationName);
       await cancelReservationCall({ reservation_name: reservationName });
-      console.log(`Reservation for "${bookTitle}" cancelled successfully.`);
+      toast.success(`Reservation for "${bookTitle}" cancelled successfully.`);
       fetchReservations(); // Re-fetch the list after successful cancellation
     } catch (err: any) {
       console.error("Failed to cancel reservation:", err);
       const errorMessage = err.messages
         ? err.messages[0]
         : err.message || "An unknown error occurred.";
-      alert(`Error cancelling reservation: ${errorMessage}`);
+      toast.error(`Error cancelling reservation: ${errorMessage}`);
     } finally {
       setCancelling(null);
     }

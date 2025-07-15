@@ -11,6 +11,7 @@ import {
 import MainLayout from "../components/MainLayout";
 import { useFrappePostCall } from "frappe-react-sdk";
 import { useState } from "react";
+import { toast } from 'sonner';
 
 interface CreateUserForm {
   full_name: string;
@@ -63,6 +64,7 @@ const CreateTestUsers = () => {
           throw new Error("Invalid user type");
       }
 
+      toast.success(response?.message || "User created successfully!");
       setMessage({
         type: "success",
         text: response?.message || "User created successfully!",
@@ -78,6 +80,7 @@ const CreateTestUsers = () => {
       });
     } catch (error: any) {
       console.error("Error creating user:", error);
+      toast.error(error.message || "Failed to create user");
       setMessage({
         type: "error",
         text: error.message || "Failed to create user",

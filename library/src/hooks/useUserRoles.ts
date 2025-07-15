@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useFrappeAuth, useFrappePostCall } from 'frappe-react-sdk';
+import { toast } from 'sonner';
 
 export interface UserRoles {
   roles: string[];
@@ -51,6 +52,12 @@ export const useUserRoles = (): UserRoles => {
 
     fetchUserRoles();
   }, [currentUser, authLoading, getCurrentUserRoles]);
+
+  useEffect(() => {
+    if (error) {
+      toast.error(error);
+    }
+  }, [error]);
 
   const isLibrarian = roles.some(role =>
     ['Librarian', 'Library Manager', 'System Manager'].includes(role)

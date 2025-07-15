@@ -6,6 +6,7 @@ import { RoleBasedNavigation } from "./RoleBasedNavigation";
 import { useUserRoles } from "../hooks/useUserRoles";
 import { useTheme } from "../App";
 import { SunIcon, MoonIcon } from "@radix-ui/react-icons";
+import { toast } from 'sonner';
 
 interface MainLayoutProps {
   children: React.ReactNode;
@@ -19,6 +20,7 @@ const MainLayout = ({ children }: MainLayoutProps) => {
 
   const handleLogout = async () => {
     await logout();
+    toast.success("Logged out successfully!");
     navigate("/login");
   };
 

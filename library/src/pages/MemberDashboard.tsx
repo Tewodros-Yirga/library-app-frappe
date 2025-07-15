@@ -13,6 +13,7 @@ import { useFrappePostCall } from "frappe-react-sdk";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import MainLayout from "../components/MainLayout";
+import { toast } from 'sonner';
 
 interface MemberStats {
   totalBooks: number;
@@ -54,6 +55,12 @@ export default function MemberDashboard() {
     fetchStats();
   }, [getBooksCall]);
 
+  useEffect(() => {
+    if (error) {
+      toast.error(error);
+    }
+  }, [error]);
+
   // Export loan history as CSV
   const handleExportLoanHistory = async () => {
     setExporting(true);
@@ -63,8 +70,10 @@ export default function MemberDashboard() {
       // If using frappe-react-sdk, you may need to fetch the file from a URL or handle differently
       // Here, we assume the response contains a 'file_url' or 'csv_content'
       if (response?.file_url) {
+        toast.success("Export started! Your download will begin shortly.");
         window.open(response.file_url, "_blank");
       } else if (response?.csv_content) {
+        toast.success("Export started! Your download will begin shortly.");
         // Download CSV from content
         const blob = new Blob([response.csv_content], { type: "text/csv" });
     const url = window.URL.createObjectURL(blob);
@@ -74,10 +83,10 @@ export default function MemberDashboard() {
     a.click();
     window.URL.revokeObjectURL(url);
       } else {
-        alert("Export failed: No CSV data returned.");
+        toast.error("Export failed: No CSV data returned.");
       }
     } catch (err: any) {
-      alert("Export failed: " + (err.message || "Unknown error"));
+      toast.error("Export failed: " + (err.message || "Unknown error"));
     } finally {
       setExporting(false);
     }

@@ -19,6 +19,7 @@ import { useFrappePostCall } from "frappe-react-sdk";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import MainLayout from "../components/MainLayout";
+import { toast } from 'sonner';
 
 interface DashboardStats {
   totalBooks: number;
@@ -104,6 +105,12 @@ export default function LibrarianDashboard() {
 
     fetchDashboardData();
   }, [getBooksCall, getMembersCall, getLoansCall, getOverdueCall, getReservationsCall]);
+
+  useEffect(() => {
+    if (error) {
+      toast.error(error);
+    }
+  }, [error]);
 
   return (
     <MainLayout>

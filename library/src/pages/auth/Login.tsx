@@ -14,6 +14,7 @@ import { useFrappeAuth } from "frappe-react-sdk";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTheme } from "../../App";
+import { toast } from 'sonner';
 
 interface LoginProps {
   alwaysDark?: boolean;
@@ -52,10 +53,12 @@ const Login = ({ alwaysDark }: LoginProps) => {
     })
       .then((res) => {
         console.log("Login successful:", res);
+        toast.success("Login successful! Redirecting...");
       })
       .catch((err) => {
         console.error("Login failed:", err);
         setLoginError(err);
+        toast.error(err?.message || "Invalid username or password. Please try again.");
       });
   };
 

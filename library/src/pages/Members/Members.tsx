@@ -15,6 +15,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useFrappePostCall, useFrappeDeleteDoc } from "frappe-react-sdk";
 import { Pencil1Icon, TrashIcon } from "@radix-ui/react-icons";
 import { useEffect } from "react";
+import { toast } from 'sonner';
 
 interface MemberData {
   name: string;
@@ -59,10 +60,16 @@ const Members = () => {
     fetchData();
   }, [fetchMembersCall]);
 
+  useEffect(() => {
+    if (fetchError) {
+      toast.error(fetchError.message || "Failed to load members");
+    }
+  }, [fetchError]);
+
   const handleDelete = async (name: string, memberName: string) => {
     try {
       await deleteDoc("Member", name);
-      console.log(`Member "${memberName}" deleted successfully.`);
+      toast.success(`Member "${memberName}" deleted successfully.`);
       fetchMembersCall({});
       resetDelete();
     } catch (err: any) {
@@ -70,7 +77,7 @@ const Members = () => {
       const errorMessage = err.messages
         ? err.messages[0]
         : err.message || "An unknown error occurred.";
-      alert(`Error deleting member: ${errorMessage}`);
+      toast.error(`Error deleting member: ${errorMessage}`);
     }
   };
 

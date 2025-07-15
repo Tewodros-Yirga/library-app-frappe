@@ -13,6 +13,7 @@ import MainLayout from "../components/MainLayout";
 import { useFrappePostCall } from "frappe-react-sdk";
 import { useEffect, useState } from "react";
 import { Cross1Icon } from "@radix-ui/react-icons";
+import { toast } from 'sonner';
 
 interface MyReservationData {
   name: string;
@@ -51,6 +52,12 @@ const MyReservations = () => {
     fetchMyReservations();
   }, [getMyReservationsCall]);
 
+  useEffect(() => {
+    if (error) {
+      toast.error(error);
+    }
+  }, [error]);
+
   const handleCancelReservation = async (reservationName: string, bookTitle: string) => {
     if (!confirm(`Are you sure you want to cancel your reservation for "${bookTitle}"?`)) {
       return;
@@ -58,14 +65,14 @@ const MyReservations = () => {
 
     try {
       await cancelReservationCall({ reservation_name: reservationName });
-      alert("Reservation cancelled successfully");
+      toast.success("Reservation cancelled successfully");
       // Refresh the list
       const response = await getMyReservationsCall({});
       const myReservations = response?.message || [];
       setReservations(myReservations);
     } catch (err: any) {
       console.error("Error cancelling reservation:", err);
-      alert(`Error cancelling reservation: ${err.message || "Unknown error"}`);
+      toast.error(`Error cancelling reservation: ${err.message || "Unknown error"}`);
     }
   };
 

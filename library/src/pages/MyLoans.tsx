@@ -11,6 +11,7 @@ import {
 import MainLayout from "../components/MainLayout";
 import { useFrappePostCall } from "frappe-react-sdk";
 import { useEffect, useState } from "react";
+import { toast } from 'sonner';
 
 interface MyLoanData {
   name: string;
@@ -49,6 +50,12 @@ const MyLoans = () => {
 
     fetchMyLoans();
   }, [getMyLoansCall]);
+
+  useEffect(() => {
+    if (error) {
+      toast.error(error);
+    }
+  }, [error]);
 
   if (loading) {
     return (

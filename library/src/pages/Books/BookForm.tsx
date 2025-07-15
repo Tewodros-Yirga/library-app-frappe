@@ -21,6 +21,7 @@ import {
   useFrappeCreateDoc, // <--- For creating new DocTypes
   useFrappeUpdateDoc, // <--- For updating DocTypes
 } from "frappe-react-sdk";
+import { toast } from 'sonner';
 
 // Define the type for Book data
 interface BookData {
@@ -92,15 +93,13 @@ const BookForm = () => {
     try {
       if (bookName) {
         // Update existing book
-        // Pass the document name (ID) and the partial document object
         await updateDoc("Book", bookName, formData);
-        console.log("Book updated successfully!");
+        toast.success("Book updated successfully!");
         navigate("/books");
       } else {
         // Create new book
-        // Pass the DocType name and the new document object
         await createDoc("Book", formData);
-        console.log("Book created successfully!");
+        toast.success("Book created successfully!");
         navigate("/books");
       }
     } catch (error: any) {
@@ -108,7 +107,7 @@ const BookForm = () => {
       const errorMessage = error.messages
         ? error.messages[0]
         : error.message || "An unknown error occurred.";
-      alert(`Error saving book: ${errorMessage}`);
+      toast.error(`Error saving book: ${errorMessage}`);
     }
   };
 

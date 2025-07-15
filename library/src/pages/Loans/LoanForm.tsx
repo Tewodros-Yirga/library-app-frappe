@@ -16,6 +16,7 @@ import {
 import MainLayout from "../../components/MainLayout";
 import { useFrappePostCall, useFrappeCreateDoc } from "frappe-react-sdk";
 import  DatePicker  from "../../components/DatePicker";
+import { toast } from 'sonner';
 
 interface LoanData {
   book: string;
@@ -99,10 +100,11 @@ const LoanForm = () => {
         loan_date: data.loan_date,
         return_date: data.return_date,
       });
+      toast.success("Loan created successfully!");
       navigate("/loans");
     } catch (error: any) {
       console.error("Failed to create loan:", error);
-      alert(`Error: ${error.message || "Failed to create loan"}`);
+      toast.error(error.message || "Failed to create loan");
     }
   };
 
