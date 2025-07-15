@@ -130,8 +130,8 @@ bench start
 # In your bench directory 
 
 # Clone the Doppio frontend repository
-# 'my-frontend' is the directory name for your frontend application.
-[https://github.com/NagariaHussain/doppio](https://github.com/NagariaHussain/doppio) 
+
+[https://github.com/NagariaHussain/doppio]
 
 # follow the documentation
 
