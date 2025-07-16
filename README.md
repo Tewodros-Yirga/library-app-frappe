@@ -1,176 +1,233 @@
 # 📚 Library Management System
 
-A full-stack **Library Management System** developed using [Frappe Framework 15](https://frappeframework.com/) (backend) and **React 18+ with TypeScript** (frontend). This system allows authenticated users to manage books, members, loans, and reservations — all through a **custom frontend**, without using Frappe Desk.
+A full-stack **Library Management System** built using **Frappe Framework 15** for the backend and **React 18 + TypeScript** for the frontend. This project allows authenticated users to manage books, members, loans, and reservations, with **role-based access**, **secure REST APIs**, and a clean **custom UI (not using Frappe Desk)**.
 
-> 🛠 Developed as part of a Junior Developer challenge at [360Ground](https://360ground.com), submitted on **July 15, 2025**.
+> 🛠 Developed as part of a Junior Developer challenge at [360Ground](https://360ground.com).  
+> 📅 Submitted: **July 15, 2025**
 
 ---
 
-## 🚀 Project Features
+## 🚀 Features
 
 ### ✅ Core Functionalities
 
 - **📚 Book Management (CRUD)**  
-  Add, update, view, and delete books with attributes: `Title`, `Author`, `Publish Date`, and `ISBN`.
+  Manage books with `Title`, `Author`, `Publish Date`, and `ISBN`.
 
 - **👤 Member Management (CRUD)**  
-  Manage library members with details like `Name`, `Membership ID`, `Email`, and `Phone`.
+  Add and manage library members with `Name`, `Membership ID`, `Email`, and `Phone`.
 
-- **📄 Loan Management**  
-  Loan books to members while capturing `Loan Date` and `Return Date`.
+- **🔁 Loan Creation**  
+  Loan books to members, tracking `Loan Date` and `Return Date`.
 
-- **🟡 Availability Check**  
-  Prevents multiple simultaneous loans of the same book.
+- **✅ Book Availability Checks**  
+  Prevent simultaneous loans of the same book.
 
 - **⏳ Reservation Queue**  
-  Members can reserve books that are currently on loan.
+  Members can reserve books currently on loan.
 
 - **📧 Overdue Notifications**  
-  Sends email reminders for overdue loans.
+  Automatically sends reminder emails for overdue loans.
 
-- **📊 Reporting**  
-  Generates reports of books on loan and overdue items.
+- **📊 Reports**  
+  View lists of currently loaned and overdue books.
 
-- **🔐 Role-Based Access Control**  
-  Includes `Admin`, `Librarian`, and `Member` roles with secure authentication.
+- **🔐 Authentication & Roles**  
+  Users are authenticated and granted access based on roles: `Admin`, `Librarian`, or `Member`.
 
 - **🧪 RESTful API**  
-  Endpoints for secure, authenticated interaction with all core resources.
-
-### 🧩 Optional (Stretch) Features
-
-> ⚠️ Due to time constraints, these were considered but not fully implemented:
-
-- CSV export of loan history  
-- Auto-deployment pipelines  
-- Automated testing (targeting 80% coverage)
+  Secure API endpoints to interact with all resources externally.
 
 ---
 
-## 🧱 Architecture Overview
+## 🧱 Project Structure
 
-```
+This repo contains **only the custom Frappe app** (`library_app`) and the frontend (`library`) as required.
+
+```bash
 project-root/
 ├── ├── library_app/
 │   │   ├── api.py          # All RESTful API logic
 │   │   ├── hooks.py        # Linked backend events
-│   │   └── doctype/        # Custom DocTypes: Book, Member, Loan, Reservation
+│   │   └── library/doctype/        # Custom DocTypes: Book, Member, Loan, Reservation
 │   └── ...
 └── frontend/
     └── src/
         ├── components/     # Reusable UI components
         ├── pages/          # Core pages: Books, Members, Loans
-        └── App.tsx         # Root layout and routing
-
-# Project Setup Guide
-
-This guide will walk you through setting up both the backend (Frappe) and frontend (React with Doppio) for your project.
-
+        └── App.tsx         # Root layout and routing  
+  
+  
 ---
 
 ## ⚙️ Setup Instructions
 
+This setup was performed using **WSL2 with Ubuntu 22.04** on Windows.
+
 ### 🔧 Prerequisites
 
-Before you begin, ensure you have the following installed on your system:
+Ensure you have the following installed:
 
-* **WSL2 with Ubuntu 22.04:** This project is developed and tested within a Windows Subsystem for Linux 2 (WSL2) environment running Ubuntu 22.04.
-* **Python 3.10+:** Ensure you have Python version 3.10 or newer installed.
-* **Node.js 18+, Yarn:** These are required for front-end asset compilation.
-* **Redis & MariaDB (installed via Frappe):** These database services are typically installed as part of the Frappe framework setup.
+- WSL2 + Ubuntu 22.04
+- Python 3.10+
+- Node.js 18+ and Yarn
+- Frappe Bench CLI
+- Redis & MariaDB (installed with Frappe)
 
 ---
 
-## 🗂️ Backend Setup (Frappe)
+## 🗂️ Backend & Frontend Setup
 
-This section guides you through setting up the Frappe backend, including system dependencies, Frappe Bench, and your custom application.
+This project uses a Frappe backend and a **custom React + TypeScript SPA** generated using the [Doppio boilerplate](https://github.com/NagariaHussain/doppio), added directly into your Frappe app.
+
+---
+
+### 🧱 Backend Setup (Frappe App + SPA Integration)
 
 ```bash
 # Step 1: Install system dependencies
-# These packages are essential for Frappe, Python environments, and database services.
 sudo apt update
 sudo apt install -y python3.10-venv python3-pip redis-server mariadb-server curl git
 
-# Step 2: Setup Frappe Bench
-# Frappe Bench is the command-line interface to manage Frappe installations.
-
-# Install Frappe Bench
-# It's recommended to install bench in a separate directory or globally,
-# but for simplicity, we'll install it where it can be used to initialize.
+# Step 2: Install Frappe Bench CLI
 pip install frappe-bench
 
-# Initialize a new Frappe Bench
-# This creates a 'library-bench' directory which will house your Frappe apps and sites.
+# Step 3: Initialize Frappe bench
 bench init library-bench --frappe-branch version-15
-
-# Navigate into your new Frappe Bench directory
 cd library-bench
-# Step 3: Create & Setup Site
-# This involves creating a new Frappe site and integrating your custom app.
 
-# Create a new Frappe site
-# 'library.local' will be the name of your development site.
-bench new-site library.local
+# Step 4: Create your custom Frappe app
+bench new-app library_app --app-title "Library"
 
-# Get your custom app and link it to the bench
-# Replace 'library_app' with the actual name of your custom app.
-# The '.' indicates that your app repository is in the current directory (within 'apps' later).
-bench get-app library_app .
+# Step 5: Install Doppio (SPA boilerplate with React + TypeScript)
+bench get-app doppio https://github.com/NagariaHussain/doppio
 
-# Install your custom app on the newly created site
+# Step 6: Add a SPA dashboard (creates frontend inside app)
+bench add-spa
+
+# You will be prompted:
+# Dashboard Name: library
+# App: library_app
+# Framework: react
+# TypeScript: yes
+
+# Step 7: Create a new site
+bench new-site library.localhost
+
+# Step 8: Use the site
+bench use library.localhost
+
+# Step 9: Install your custom app
 bench install-app library_app
-# Step 4: Start the Backend
-# This command starts the Frappe development server.
+
+# Step 10: Start Frappe development server
 bench start
 
-## 🗂️ Frontend Setup 
 
-# Step 1: Clone & Install
-# In your bench directory 
+## 🖥️ Frontend Setup (React + TypeScript)
+The frontend is a React + TypeScript SPA located in apps/library_app/library.
+# Navigate to the frontend directory
+cd apps/library_app/library
 
-# Clone the Doppio frontend repository
+# Install dependencies
+yarn install
 
-[https://github.com/NagariaHussain/doppio]
-
-# follow the documentation
-
-
-# Step 2: Run the frontend
-# This command starts the React development server.
+# Start development server
 yarn dev
 
----
-## 🧪 Testing
+Ensure the .env file includes your backend API:
+VITE_API_BASE_URL=http://localhost:8000
 
-Manual testing was performed on the following functionalities to ensure proper operation:
 
-* **Book/member CRUD:** Creation, reading, updating, and deletion of book and member records.
-* **Loan logic (with constraints):** Verification of borrowing rules, due dates, and other loan-related restrictions.
-* **Reservation queueing:** Testing the system for managing book reservations and their order.
-* **Authentication & role access:** Confirmation that user authentication works correctly and that role-based access controls are enforced.
-* **Notification triggers (mocked during dev):** Although notifications were mocked during development, their triggers were tested to ensure they would fire under the correct conditions.
-
-Automated tests were not implemented due to time constraints; however, test hooks are structured and ready in `library_app for future implementation.
 
 ---
-## ⚖️ Trade-offs & Shortcuts
 
-Due to the limited timeframe for this project, certain **stretch goals** and features were not fully implemented. These include:
+## 🏁 Run Locally (Clone & Launch Full System)
 
-* **CSV export:** The functionality to export data in CSV format was not developed.
-* **Auto-deployment:** Automated deployment pipelines were not set up.
-* **Comprehensive test coverage:** While manual testing was performed, extensive automated test coverage was not implemented.
----
-## ✨ Future Enhancements 
-
-* **Robust test suite with 80–90% coverage:** Implementing comprehensive automated tests to ensure stability, reliability, and prevent regressions.
-* **Fully automated CI/CD with Docker or Render:** Setting up continuous integration and continuous deployment pipelines for efficient and reliable code delivery.
-* **Admin dashboard with analytics:** Developing a dedicated dashboard for administrators to monitor key metrics such as loan trends, active members, and inventory status.
-* **PDF and CSV export options:** Adding functionality to export data in various formats for reporting and external use.
-* **Push notifications for reservations & returns:** Implementing real-time notifications to inform users about their reservations and overdue returns.
-* **Offline access/PWA support for librarians:** Enhancing the librarian interface with Progressive Web App (PWA) capabilities to allow for offline functionality.
+> This repository contains only the custom app (`library_app`) and the frontend SPA (`library`) inside it.  
+> You'll need to install this app inside your own Frappe bench environment.
 
 ---
-## 🙌 Author
 
-**Tewodros Yirga (Teddy)**
+### 1️⃣ Clone This Repo
+
+```bash
+git clone https://github.com/Tewodros-Yirga/library-app-frappe.git
+
+This repository contains:
+
+* **`library_app/`**: The backend Frappe app, encompassing all custom DocTypes, server-side logic, and APIs.
+* **`library/`**: The standalone frontend Single Page Application (SPA), built with React and TypeScript.
+
+Please note that the Frappe Framework itself is not included in this repository. Follow the setup steps below to configure the Frappe environment.
+
+
+
+### 🔐 Authentication & Role Management
+
+Authentication is managed using Frappe's built-in API methods:
+* `/api/method/login`
+* `/api/method/logout`
+* `/api/method/library_app.api.register_user` - custom api
+
+The system defines the following roles:
+* **Admin**: Possesses full access to all functionalities.
+* **Librarian**: Permitted to manage books, members, and loans.
+* **Member**: Allowed to browse available books and make reservations.
+
+Role-based access control is enforced through both backend permissions and frontend route protection to ensure secure access.
+
+### 🌐 Custom API Endpoints
+
+Some custom API endpoints are defined in `library_app/api.py`.
+
+| Feature         | Method | Endpoint                                    |
+|-----------------|--------|---------------------------------------------|
+| List books      | GET    | `/api/method/library_app.api.get_books`     |
+| Add book        | POST   | `/api/method/library_app.api.create_book`   |
+| Add member      | POST   | `/api/method/library_app.api.create_member` |
+| Create loan     | POST   | `/api/method/library_app.api.create_loan`   |
+| Reserve book    | POST   | `/api/method/library_app.api.reserve_book`  |
+| Get reports     | GET    | `/api/method/library_app.api.get_reports`   |
+
+All endpoints require authentication via session cookies or API key.
+
+### 🧪 Testing & Validation
+
+**Manual testing was conducted for all critical flows to ensure correctness:**
+
+**Book & Member CRUD**: Verified creation, viewing, editing, and deletion of books and members through the custom front-end.
+**Loan creation with availability validation**: Confirmed the process of loaning books to members, capturing loan and return dates, and ensuring prevention of duplicate loans for books already on loan.
+**Reservation queuing logic**: Tested the ability for members to reserve currently unavailable books.
+**Authentication + role-based access control**: Validated user registration, login, logout, and permissions based on Admin, Librarian, and Member roles.
+**Overdue Email notification triggers**: Tested the system's ability to trigger email notifications for overdue loans (mocked for development).
+
+While comprehensive automated test coverage (e.g., ≥ 80% as per Stretch Story SS-02 ) was not implemented due to time constraints, the application's structure, including test functions and API validations, is designed for straightforward expansion of automated tests in the future.
+
+### ⚖️ Trade-offs & Shortcuts
+
+Due to time constraints and the scope of a short, fixed timeline, the following trade-offs and shortcuts were made:
+
+| Feature                   | Decision / Shortcut                                    | Reasoning                                                       |
+|:--------------------------|:-------------------------------------------------------|:----------------------------------------------------------------|
+| **CSV Export** | Not implemented.                                       | Prioritized core "MUST complete" user stories.                  |
+| **CI/CD** | Manual deployment; no automated pipeline implemented.  | Focused on core application development.                        |
+| **Automated Testing** | Manual only; test scaffolds are in place.              | Prioritized functional completeness over automated test coverage. |
+| **State Management (Frontend)** | No advanced state management libraries (e.g., Redux, Zustand) used. | Reduced frontend complexity and development time.               |
+
+### ✨ Future Enhancements
+
+If this project were to evolve into a production system, the following enhancements would be prioritized:
+
+* **Comprehensive Automated Test Coverage**: Achieve 80%+ automated test coverage, including robust unit, integration (pytest), and API tests to ensure stability and reliability for future changes.
+* **Enhanced Reporting and Export**: Implement CSV and PDF export functionalities for detailed loan history and other reports, providing librarians with greater data analysis capabilities.
+* **Full CI/CD Pipeline**: Establish a complete Continuous Integration/Continuous Deployment pipeline (e.g., using Render or Docker) to automate testing, building, and deployment processes, enabling faster and more reliable releases.
+* **Admin Dashboard with Visual Analytics**: Develop an intuitive admin dashboard featuring visual analytics to provide librarians with insights into book availability, loan trends, and member activity.
+* **Real-time Push Notifications**: Integrate real-time push notifications for members regarding reservation availability and overdue book reminders, improving user experience and book return rates.
+* **Progressive Web App (PWA) Support**: Implement PWA features to enable offline access for librarians, ensuring continuous operation even in environments with limited or no internet connectivity.
+
+### 👨‍💻 Author
+
+Tewodros Yirga (Teddy)
+
+📧 tewodrosy21@gmail.com
